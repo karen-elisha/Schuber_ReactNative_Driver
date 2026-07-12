@@ -21,7 +21,8 @@ const DUMMY_DRIVERS = [
 
 const STATUS_FILTERS = ['All', 'ACTIVE', 'ON DUTY', 'OFF DUTY', 'INACTIVE'];
 
-const statusColor = (s) => ({ 'ON DUTY':'#3b82f6', 'ACTIVE':'#10b981', 'OFF DUTY':'#f59e0b', 'INACTIVE':'#ef4444' }[s] || '#64748b');
+const statusColor = (s) => ({ 'ON DUTY':'#664EA4', 'ACTIVE':'#2FAE60', 'OFF DUTY':'#E07C00', 'INACTIVE':'#E14434' }[s] || '#6B6B6B');
+const statusBg = (s) => ({ 'ON DUTY':'#664EA422', 'ACTIVE':'#E4F6EB', 'OFF DUTY':'#FBE0C6', 'INACTIVE':'#FCE8E5' }[s] || '#F6F6F6');
 const statusIcon = (s) => ({ 'ON DUTY':'🔵', 'ACTIVE':'🟢', 'OFF DUTY':'⭕', 'INACTIVE':'🔴' }[s] || '⚪');
 const initials = (name) => name.split(' ').slice(0,2).map(w => w[0].toUpperCase()).join('');
 const formatDate = (ts) => new Date(ts).toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' });
@@ -96,11 +97,11 @@ export default function DriverDetailsScreen({ navigation }) {
           <Text style={styles.statLbl}>Total</Text>
         </View>
         <View style={styles.statBox}>
-          <Text style={[styles.statVal, { color:'#10b981' }]}>{active}</Text>
+          <Text style={[styles.statVal, { color:'#2FAE60' }]}>{active}</Text>
           <Text style={styles.statLbl}>Active</Text>
         </View>
         <View style={styles.statBox}>
-          <Text style={[styles.statVal, { color:'#3b82f6' }]}>{onDuty}</Text>
+          <Text style={[styles.statVal, { color:'#664EA4' }]}>{onDuty}</Text>
           <Text style={styles.statLbl}>On Duty</Text>
         </View>
       </View>
@@ -110,7 +111,7 @@ export default function DriverDetailsScreen({ navigation }) {
         <TextInput
           style={styles.searchInput}
           placeholder="Search by name, vehicle, ID..."
-          placeholderTextColor="#64748b"
+          placeholderTextColor="#9B9B9B"
           value={search}
           onChangeText={setSearch}
         />
@@ -145,7 +146,7 @@ export default function DriverDetailsScreen({ navigation }) {
                 <Text style={styles.cardSub}>{item.email}</Text>
                 <Text style={styles.cardSub}>ID: {item.driverId}</Text>
               </View>
-              <View style={[styles.statusBadge, { backgroundColor: statusColor(item.status) + '22', borderColor: statusColor(item.status) }]}>
+              <View style={[styles.statusBadge, { backgroundColor: statusBg(item.status), borderColor: statusColor(item.status) }]}>
                 <Text style={[styles.statusText, { color: statusColor(item.status) }]}>{item.status}</Text>
               </View>
             </View>
@@ -189,7 +190,7 @@ export default function DriverDetailsScreen({ navigation }) {
                 style={[styles.filterOption, statusFilter === f && styles.filterOptionActive]}
                 onPress={() => { setStatusFilter(f); setShowFilterMenu(false); }}
               >
-                <Text style={[styles.filterOptionText, statusFilter === f && { color:'#3b82f6' }]}>
+                <Text style={[styles.filterOptionText, statusFilter === f && { color:'#664EA4', fontWeight:'700' }]}>
                   {f === 'All' ? '🔍 All' : `${statusIcon(f)} ${f}`}
                 </Text>
               </TouchableOpacity>
@@ -269,57 +270,57 @@ function ModalRow({ label, value }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex:1, backgroundColor:'#0f172a' },
+  container: { flex:1, backgroundColor:'#FFF7E1' },
   header: { flexDirection:'row', alignItems:'center', justifyContent:'space-between', padding:16, paddingTop:8 },
   backBtn: { padding:8 },
-  backText: { color:'#f1f5f9', fontSize:32, lineHeight:36 },
-  headerTitle: { color:'#f1f5f9', fontSize:18, fontWeight:'700' },
-  exportBtn: { color:'#3b82f6', fontSize:14, fontWeight:'600' },
-  statsRow: { flexDirection:'row', marginHorizontal:16, marginBottom:10, backgroundColor:'#1e293b', borderRadius:12, padding:12 },
+  backText: { color:'#1F1B24', fontSize:32, lineHeight:36 },
+  headerTitle: { color:'#1F1B24', fontSize:18, fontWeight:'700' },
+  exportBtn: { color:'#664EA4', fontSize:14, fontWeight:'600' },
+  statsRow: { flexDirection:'row', marginHorizontal:16, marginBottom:10, backgroundColor:'#FFFFFF', borderRadius:12, padding:12, borderWidth:1, borderColor:'#EFEAE0' },
   statBox: { flex:1, alignItems:'center' },
-  statVal: { color:'#f1f5f9', fontSize:22, fontWeight:'800' },
-  statLbl: { color:'#64748b', fontSize:11, marginTop:2 },
+  statVal: { color:'#1F1B24', fontSize:22, fontWeight:'800' },
+  statLbl: { color:'#6B6B6B', fontSize:11, marginTop:2 },
   searchRow: { flexDirection:'row', marginHorizontal:16, marginBottom:6, gap:8 },
-  searchInput: { flex:1, backgroundColor:'#1e293b', borderRadius:10, paddingHorizontal:14, paddingVertical:10, color:'#f1f5f9', fontSize:14, borderWidth:1, borderColor:'#334155' },
-  filterBtn: { backgroundColor:'#1e293b', borderRadius:10, paddingHorizontal:12, paddingVertical:10, borderWidth:1, borderColor:'#334155', justifyContent:'center' },
-  filterBtnText: { color:'#94a3b8', fontSize:12, fontWeight:'600' },
-  countText: { color:'#64748b', fontSize:12, marginHorizontal:20, marginBottom:8 },
+  searchInput: { flex:1, backgroundColor:'#FFFFFF', borderRadius:10, paddingHorizontal:14, paddingVertical:10, color:'#1F1B24', fontSize:14, borderWidth:1, borderColor:'#EFEAE0' },
+  filterBtn: { backgroundColor:'#FFFFFF', borderRadius:10, paddingHorizontal:12, paddingVertical:10, borderWidth:1, borderColor:'#EFEAE0', justifyContent:'center' },
+  filterBtnText: { color:'#664EA4', fontSize:12, fontWeight:'600' },
+  countText: { color:'#9B9B9B', fontSize:12, marginHorizontal:20, marginBottom:8 },
   list: { paddingHorizontal:16, paddingBottom:30 },
   emptyWrap: { alignItems:'center', paddingTop:60 },
   emptyIcon: { fontSize:48, marginBottom:12 },
-  emptyText: { color:'#475569', fontSize:16 },
-  card: { backgroundColor:'#1e293b', borderRadius:14, padding:16, marginBottom:12 },
+  emptyText: { color:'#9B9B9B', fontSize:16 },
+  card: { backgroundColor:'#FFFFFF', borderRadius:14, padding:16, marginBottom:12, borderWidth:1, borderColor:'#EFEAE0' },
   cardHeader: { flexDirection:'row', alignItems:'center', marginBottom:12 },
   avatar: { width:44, height:44, borderRadius:22, justifyContent:'center', alignItems:'center', marginRight:12 },
   avatarText: { color:'#fff', fontWeight:'700', fontSize:14 },
   cardInfo: { flex:1 },
-  cardName: { color:'#f1f5f9', fontSize:15, fontWeight:'700' },
-  cardSub: { color:'#64748b', fontSize:12, marginTop:1 },
+  cardName: { color:'#1F1B24', fontSize:15, fontWeight:'700' },
+  cardSub: { color:'#6B6B6B', fontSize:12, marginTop:1 },
   statusBadge: { borderRadius:8, paddingHorizontal:8, paddingVertical:3, borderWidth:1 },
   statusText: { fontSize:10, fontWeight:'700' },
   detailsGrid: { flexDirection:'row', flexWrap:'wrap', marginBottom:12 },
   detailItem: { width:'50%', marginBottom:6 },
-  detailLabel: { color:'#64748b', fontSize:11 },
-  detailValue: { color:'#cbd5e1', fontSize:13, fontWeight:'500' },
+  detailLabel: { color:'#9B9B9B', fontSize:11 },
+  detailValue: { color:'#1F1B24', fontSize:13, fontWeight:'500' },
   actions: { flexDirection:'row', flexWrap:'wrap', gap:8 },
-  btnView: { backgroundColor:'#334155', borderRadius:8, paddingHorizontal:12, paddingVertical:7 },
-  btnViewText: { color:'#f1f5f9', fontSize:12, fontWeight:'600' },
-  btnContact: { backgroundColor:'#1e40af33', borderRadius:8, paddingHorizontal:12, paddingVertical:7, borderWidth:1, borderColor:'#3b82f655' },
-  btnContactText: { color:'#3b82f6', fontSize:12, fontWeight:'600' },
-  btnToggle: { backgroundColor:'#78350f33', borderRadius:8, paddingHorizontal:12, paddingVertical:7, borderWidth:1, borderColor:'#f59e0b55' },
-  btnToggleText: { color:'#f59e0b', fontSize:12, fontWeight:'600' },
-  modalOverlay: { flex:1, backgroundColor:'#000000aa', justifyContent:'center', alignItems:'center' },
-  filterMenu: { backgroundColor:'#1e293b', borderRadius:16, padding:20, width:240 },
-  filterMenuTitle: { color:'#f1f5f9', fontSize:15, fontWeight:'700', marginBottom:12 },
+  btnView: { backgroundColor:'#F6F6F6', borderRadius:8, paddingHorizontal:12, paddingVertical:7, borderWidth:1, borderColor:'#EFEAE0' },
+  btnViewText: { color:'#1F1B24', fontSize:12, fontWeight:'600' },
+  btnContact: { backgroundColor:'#664EA422', borderRadius:8, paddingHorizontal:12, paddingVertical:7, borderWidth:1, borderColor:'#664EA455' },
+  btnContactText: { color:'#4E3A85', fontSize:12, fontWeight:'600' },
+  btnToggle: { backgroundColor:'#FBE0C6', borderRadius:8, paddingHorizontal:12, paddingVertical:7, borderWidth:1, borderColor:'#F4941A55' },
+  btnToggleText: { color:'#E07C00', fontSize:12, fontWeight:'600' },
+  modalOverlay: { flex:1, backgroundColor:'#1F1B24aa', justifyContent:'center', alignItems:'center' },
+  filterMenu: { backgroundColor:'#FFFFFF', borderRadius:16, padding:20, width:240 },
+  filterMenuTitle: { color:'#1F1B24', fontSize:15, fontWeight:'700', marginBottom:12 },
   filterOption: { paddingVertical:10, paddingHorizontal:8, borderRadius:8 },
-  filterOptionActive: { backgroundColor:'#3b82f622' },
-  filterOptionText: { color:'#cbd5e1', fontSize:14 },
-  detailOverlay: { flex:1, backgroundColor:'#000000aa', justifyContent:'center', alignItems:'center', padding:20 },
-  detailBox: { backgroundColor:'#1e293b', borderRadius:16, padding:20, width:'100%', maxHeight:'85%' },
-  modalTitle: { color:'#f1f5f9', fontSize:18, fontWeight:'700', marginBottom:16, textAlign:'center' },
-  modalSection: { color:'#94a3b8', fontSize:12, fontWeight:'700', letterSpacing:1, marginTop:12, marginBottom:6 },
+  filterOptionActive: { backgroundColor:'#664EA422' },
+  filterOptionText: { color:'#1F1B24', fontSize:14 },
+  detailOverlay: { flex:1, backgroundColor:'#1F1B24aa', justifyContent:'center', alignItems:'center', padding:20 },
+  detailBox: { backgroundColor:'#FFFFFF', borderRadius:16, padding:20, width:'100%', maxHeight:'85%' },
+  modalTitle: { color:'#1F1B24', fontSize:18, fontWeight:'700', marginBottom:16, textAlign:'center' },
+  modalSection: { color:'#664EA4', fontSize:12, fontWeight:'700', letterSpacing:1, marginTop:12, marginBottom:6 },
   modalRow: { flexDirection:'row', marginBottom:6 },
-  modalLabel: { color:'#64748b', fontSize:13, width:100 },
-  modalValue: { color:'#cbd5e1', fontSize:13, flex:1, fontWeight:'500' },
+  modalLabel: { color:'#9B9B9B', fontSize:13, width:100 },
+  modalValue: { color:'#1F1B24', fontSize:13, flex:1, fontWeight:'500' },
   modalActions: { flexDirection:'row', gap:8, marginTop:16, justifyContent:'flex-end', flexWrap:'wrap' },
 });

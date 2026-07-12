@@ -14,8 +14,12 @@ import {
   ScrollView,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import LinearGradient from 'react-native-linear-gradient';
+// If you're not using Expo / don't have expo-linear-gradient installed, run:
+// npx expo install expo-linear-gradient
+// or swap the <LinearGradient> wrapper below for a plain <View style={styles.container}>.
 
-const STORAGE_KEY = 'SchuberAdmin';
+const STORAGE_KEY = 'SchuberDriver';
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
@@ -121,34 +125,26 @@ export default function LoginScreen({ navigation }) {
     }
     return valid;
   };
-
   const performLogin = async () => {
-    if (!validate()) return;
-
+    console.log('LOGIN: start');
     setLoading(true);
-
-    const savedEmail = await AsyncStorage.getItem(`${STORAGE_KEY}:admin_email`);
-    const savedPassword = await AsyncStorage.getItem(`${STORAGE_KEY}:admin_password`);
-    const adminName = await AsyncStorage.getItem(`${STORAGE_KEY}:admin_name`);
-
-    if (email === savedEmail && password === savedPassword) {
+    try {
+      console.log('LOGIN: before multiSet, AsyncStorage =', typeof AsyncStorage, typeof AsyncStorage?.multiSet);
       await AsyncStorage.multiSet([
         [`${STORAGE_KEY}:isAdminLoggedIn`, 'true'],
         [`${STORAGE_KEY}:loginTimestamp`, Date.now().toString()],
       ]);
+      console.log('LOGIN: after multiSet');
       setLoading(false);
-      bounceCard(() => {
-        Alert.alert('', `Welcome, ${adminName || 'Admin'}!`);
-        navigation.replace('Dashboard');
-      });
-    } else {
+      navigation.replace('Dashboard');
+      console.log('LOGIN: after navigate');
+    } catch (err) {
+      console.log('LOGIN: caught error', err);
       setLoading(false);
-      shakeCard();
-      Alert.alert('Login Failed', 'Invalid email or password. Please try again.', [
-        { text: 'Try Again' },
-      ]);
+      Alert.alert('Error', String(err?.message || err));
     }
   };
+  
 
   const showForgotPassword = async () => {
     const savedEmail = await AsyncStorage.getItem(`${STORAGE_KEY}:admin_email`);
@@ -169,94 +165,98 @@ export default function LoginScreen({ navigation }) {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    >
-      <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
-        {/* App Name */}
-        <Animated.Text style={[styles.appName, { opacity: appNameOpacity }]}>
-          🚌 Schuber Admin
-        </Animated.Text>
-        <Text style={styles.subtitle}>School Transport Management</Text>
+    <LinearGradient colors={['#FFF7E1', '#FCE7B8']} style={styles.container}>
+      <KeyboardAvoidingView
+        style={styles.flexFill}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      >
+        <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
+          {/* App Name */}
+          <Animated.Text style={[styles.appName, { opacity: appNameOpacity }]}>
+            🚌 Schuber Admin
+          </Animated.Text>
+          <Text style={styles.subtitle}>School Transport Management</Text>
 
-        {/* Login Card */}
-        <Animated.View
-          style={[
-            styles.card,
-            {
-              opacity: cardOpacity,
-              transform: [
-                { translateY: cardTranslateY },
-                { translateX: cardShakeX },
-                { scale: cardScale },
-              ],
-            },
-          ]}
-        >
-          <Text style={styles.cardTitle}>Admin Login</Text>
-
-          {/* Email */}
-          <Text style={styles.label}>Email</Text>
-          <TextInput
-            style={[styles.input, emailError ? styles.inputError : null]}
-            placeholder="admin@schuber.com"
-            placeholderTextColor="#aaa"
-            keyboardType="email-address"
-            autoCapitalize="none"
-            value={email}
-            onChangeText={(t) => { setEmail(t); setEmailError(''); }}
-          />
-          {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
-
-          {/* Password */}
-          <Text style={styles.label}>Password</Text>
-          <TextInput
-            style={[styles.input, passwordError ? styles.inputError : null]}
-            placeholder="••••••"
-            placeholderTextColor="#aaa"
-            secureTextEntry
-            value={password}
-            onChangeText={(t) => { setPassword(t); setPasswordError(''); }}
-          />
-          {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
-
-          {/* Forgot Password */}
-          <TouchableOpacity onPress={showForgotPassword} style={styles.forgotWrap}>
-            <Text style={styles.forgotText}>Forgot Password?</Text>
-          </TouchableOpacity>
-
-          {/* Login Button */}
-          <TouchableOpacity
-            style={[styles.loginBtn, loading && styles.loginBtnDisabled]}
-            onPress={performLogin}
-            disabled={loading}
-            activeOpacity={0.85}
+          {/* Login Card */}
+          <Animated.View
+            style={[
+              styles.card,
+              {
+                opacity: cardOpacity,
+                transform: [
+                  { translateY: cardTranslateY },
+                  { translateX: cardShakeX },
+                  { scale: cardScale },
+                ],
+              },
+            ]}
           >
-            {loading ? (
-              <ActivityIndicator color="#fff" />
-            ) : (
-              <Text style={styles.loginBtnText}>LOGIN</Text>
-            )}
-          </TouchableOpacity>
+            <Text style={styles.cardTitle}>Admin Login</Text>
 
-          {/* Sign Up Link */}
-          <TouchableOpacity onPress={() => navigation.navigate('SignUp')} style={styles.signupWrap}>
-            <Text style={styles.signupText}>
-              New admin?{' '}
-              <Text style={styles.signupLink}>Sign Up</Text>
-            </Text>
-          </TouchableOpacity>
-        </Animated.View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+            {/* Email */}
+            <Text style={styles.label}>Email</Text>
+            <TextInput
+              style={[styles.input, emailError ? styles.inputError : null]}
+              placeholder="admin@schuber.com"
+              placeholderTextColor="#9B9B9B"
+              keyboardType="email-address"
+              autoCapitalize="none"
+              value={email}
+              onChangeText={(t) => { setEmail(t); setEmailError(''); }}
+            />
+            {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
+
+            {/* Password */}
+            <Text style={styles.label}>Password</Text>
+            <TextInput
+              style={[styles.input, passwordError ? styles.inputError : null]}
+              placeholder="••••••"
+              placeholderTextColor="#9B9B9B"
+              secureTextEntry
+              value={password}
+              onChangeText={(t) => { setPassword(t); setPasswordError(''); }}
+            />
+            {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
+
+            {/* Forgot Password */}
+            <TouchableOpacity onPress={showForgotPassword} style={styles.forgotWrap}>
+              <Text style={styles.forgotText}>Forgot Password?</Text>
+            </TouchableOpacity>
+
+            {/* Login Button */}
+            <TouchableOpacity
+              style={[styles.loginBtn, loading && styles.loginBtnDisabled]}
+              onPress={performLogin}
+              disabled={loading}
+              activeOpacity={0.85}
+            >
+              {loading ? (
+                <ActivityIndicator color="#fff" />
+              ) : (
+                <Text style={styles.loginBtnText}>LOGIN</Text>
+              )}
+            </TouchableOpacity>
+
+            {/* Sign Up Link */}
+            <TouchableOpacity onPress={() => navigation.navigate('SignUp')} style={styles.signupWrap}>
+              <Text style={styles.signupText}>
+                New admin?{' '}
+                <Text style={styles.signupLink}>Sign Up</Text>
+              </Text>
+            </TouchableOpacity>
+          </Animated.View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0f172a',
+  },
+  flexFill: {
+    flex: 1,
   },
   scroll: {
     flexGrow: 1,
@@ -268,57 +268,59 @@ const styles = StyleSheet.create({
   appName: {
     fontSize: 32,
     fontWeight: '800',
-    color: '#f8fafc',
+    color: '#1F1B24',
     letterSpacing: 1,
     marginBottom: 6,
   },
   subtitle: {
     fontSize: 14,
-    color: '#94a3b8',
+    color: '#6B6B6B',
     marginBottom: 40,
     letterSpacing: 0.5,
   },
   card: {
     width: '100%',
-    backgroundColor: '#1e293b',
+    backgroundColor: '#FFFFFF',
     borderRadius: 20,
     padding: 28,
-    shadowColor: '#000',
+    borderWidth: 1,
+    borderColor: '#EFEAE0',
+    shadowColor: '#4E3A85',
     shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.4,
+    shadowOpacity: 0.15,
     shadowRadius: 16,
     elevation: 10,
   },
   cardTitle: {
     fontSize: 22,
     fontWeight: '700',
-    color: '#f1f5f9',
+    color: '#1F1B24',
     marginBottom: 24,
     textAlign: 'center',
   },
   label: {
     fontSize: 13,
-    color: '#94a3b8',
+    color: '#6B6B6B',
     marginBottom: 6,
     fontWeight: '600',
     letterSpacing: 0.5,
   },
   input: {
-    backgroundColor: '#0f172a',
+    backgroundColor: '#F6F6F6',
     borderWidth: 1,
-    borderColor: '#334155',
+    borderColor: '#EFEAE0',
     borderRadius: 10,
     paddingHorizontal: 16,
     paddingVertical: 12,
-    color: '#f1f5f9',
+    color: '#1F1B24',
     fontSize: 15,
     marginBottom: 6,
   },
   inputError: {
-    borderColor: '#ef4444',
+    borderColor: '#E14434',
   },
   errorText: {
-    color: '#ef4444',
+    color: '#E14434',
     fontSize: 12,
     marginBottom: 8,
   },
@@ -328,12 +330,12 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   forgotText: {
-    color: '#3b82f6',
+    color: '#664EA4',
     fontSize: 13,
     fontWeight: '500',
   },
   loginBtn: {
-    backgroundColor: '#3b82f6',
+    backgroundColor: '#664EA4',
     borderRadius: 12,
     paddingVertical: 14,
     alignItems: 'center',
@@ -352,11 +354,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   signupText: {
-    color: '#94a3b8',
+    color: '#6B6B6B',
     fontSize: 14,
   },
   signupLink: {
-    color: '#3b82f6',
+    color: '#E07C00',
     fontWeight: '600',
   },
 });

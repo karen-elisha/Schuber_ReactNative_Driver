@@ -11,8 +11,12 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
+// If you want the same gradient background as Onboarding/Login, install
+// expo-linear-gradient and swap SafeAreaView's background for:
+// import { LinearGradient } from 'expo-linear-gradient';
+// <LinearGradient colors={['#FFF7E1', '#FCE7B8']} style={styles.container}>
 
-const STORAGE_KEY = 'SchuberAdmin';
+const STORAGE_KEY = 'SchuberDriver';
 
 export default function DashboardScreen({ navigation }) {
   const [adminName, setAdminName] = useState('Admin');
@@ -113,10 +117,10 @@ export default function DashboardScreen({ navigation }) {
         {/* Stats Row */}
         <Text style={styles.sectionTitle}>Overview</Text>
         <View style={styles.statsGrid}>
-          <StatCard label="Total Drivers" value={totalDrivers} color="#3b82f6" />
-          <StatCard label="Total Students" value={totalStudents} color="#10b981" />
-          <StatCard label="Pending" value={pendingApprovals} color="#f59e0b" />
-          <StatCard label="Active Routes" value={activeRoutes} color="#8b5cf6" />
+          <StatCard label="Total Drivers" value={totalDrivers} color="#664EA4" />
+          <StatCard label="Total Students" value={totalStudents} color="#2FAE60" />
+          <StatCard label="Pending" value={pendingApprovals} color="#F4941A" />
+          <StatCard label="Active Routes" value={activeRoutes} color="#4E3A85" />
         </View>
 
         {/* Menu Cards */}
@@ -127,7 +131,7 @@ export default function DashboardScreen({ navigation }) {
           title="Driver Approval"
           subtitle="Review & approve driver requests"
           badge={pendingDriversBadge}
-          color="#3b82f6"
+          color="#664EA4"
           onPress={() => navTo('DriverApproval')}
         />
         <MenuCard
@@ -135,35 +139,35 @@ export default function DashboardScreen({ navigation }) {
           title="Student Approval"
           subtitle="Review & approve student requests"
           badge={pendingStudentsBadge}
-          color="#10b981"
+          color="#F4941A"
           onPress={() => navTo('StudentApproval')}
         />
         <MenuCard
           emoji="👨‍🏫"
           title="Student Details"
           subtitle="View all student information"
-          color="#06b6d4"
+          color="#8673C4"
           onPress={() => navTo('StudentDetails')}
         />
         <MenuCard
           emoji="🚌"
           title="Driver Details"
           subtitle="View all driver information"
-          color="#8b5cf6"
+          color="#4E3A85"
           onPress={() => navTo('DriverDetails')}
         />
         <MenuCard
           emoji="💳"
           title="Payments"
           subtitle="Manage subscriptions & transactions"
-          color="#f59e0b"
+          color="#E07C00"
           onPress={() => navTo('Payments')}
         />
         <MenuCard
           emoji="🗺️"
           title="Route Management"
           subtitle="Add, edit & manage bus routes"
-          color="#ec4899"
+          color="#FDBB63"
           onPress={() => navTo('RouteManagement')}
         />
 
@@ -209,7 +213,7 @@ function MenuCard({ emoji, title, subtitle, badge, color, onPress }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0f172a',
+    backgroundColor: '#FFF7E1',
   },
   scroll: {
     padding: 20,
@@ -218,16 +222,18 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#1e293b',
+    backgroundColor: '#FFFFFF',
     borderRadius: 16,
     padding: 16,
     marginBottom: 24,
+    borderWidth: 1,
+    borderColor: '#EFEAE0',
   },
   avatarCircle: {
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: '#3b82f6',
+    backgroundColor: '#664EA4',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 14,
@@ -239,36 +245,36 @@ const styles = StyleSheet.create({
   },
   headerInfo: { flex: 1 },
   adminName: {
-    color: '#f1f5f9',
+    color: '#1F1B24',
     fontSize: 18,
     fontWeight: '700',
   },
   adminEmail: {
-    color: '#94a3b8',
+    color: '#6B6B6B',
     fontSize: 13,
     marginTop: 2,
   },
   roleBadge: {
     marginTop: 6,
     alignSelf: 'flex-start',
-    backgroundColor: '#3b82f633',
+    backgroundColor: '#664EA422',
     borderRadius: 6,
     paddingHorizontal: 8,
     paddingVertical: 2,
   },
   roleText: {
-    color: '#3b82f6',
+    color: '#4E3A85',
     fontSize: 11,
     fontWeight: '700',
     letterSpacing: 0.5,
   },
   loginTime: {
-    color: '#64748b',
+    color: '#9B9B9B',
     fontSize: 11,
     marginTop: 4,
   },
   sectionTitle: {
-    color: '#94a3b8',
+    color: '#6B6B6B',
     fontSize: 12,
     fontWeight: '700',
     letterSpacing: 1,
@@ -284,27 +290,31 @@ const styles = StyleSheet.create({
   },
   statCard: {
     width: '47%',
-    backgroundColor: '#1e293b',
+    backgroundColor: '#FFFFFF',
     borderRadius: 12,
     padding: 14,
     borderLeftWidth: 4,
+    borderWidth: 1,
+    borderColor: '#EFEAE0',
   },
   statValue: {
     fontSize: 28,
     fontWeight: '800',
   },
   statLabel: {
-    color: '#94a3b8',
+    color: '#6B6B6B',
     fontSize: 12,
     marginTop: 2,
   },
   menuCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#1e293b',
+    backgroundColor: '#FFFFFF',
     borderRadius: 14,
     padding: 16,
     marginBottom: 10,
+    borderWidth: 1,
+    borderColor: '#EFEAE0',
   },
   menuIcon: {
     width: 44,
@@ -317,17 +327,17 @@ const styles = StyleSheet.create({
   menuEmoji: { fontSize: 22 },
   menuInfo: { flex: 1 },
   menuTitle: {
-    color: '#f1f5f9',
+    color: '#1F1B24',
     fontSize: 15,
     fontWeight: '600',
   },
   menuSubtitle: {
-    color: '#64748b',
+    color: '#6B6B6B',
     fontSize: 12,
     marginTop: 2,
   },
   badge: {
-    backgroundColor: '#ef4444',
+    backgroundColor: '#E14434',
     borderRadius: 10,
     minWidth: 22,
     height: 22,
@@ -342,21 +352,21 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   menuArrow: {
-    color: '#475569',
+    color: '#9B9B9B',
     fontSize: 22,
     fontWeight: '300',
   },
   logoutBtn: {
     marginTop: 16,
-    backgroundColor: '#7f1d1d33',
+    backgroundColor: '#FCE8E5',
     borderWidth: 1,
-    borderColor: '#ef444455',
+    borderColor: '#E1443455',
     borderRadius: 14,
     padding: 16,
     alignItems: 'center',
   },
   logoutText: {
-    color: '#ef4444',
+    color: '#E14434',
     fontSize: 15,
     fontWeight: '700',
     letterSpacing: 0.5,

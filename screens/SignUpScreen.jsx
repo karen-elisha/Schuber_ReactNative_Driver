@@ -13,8 +13,12 @@ import {
   SafeAreaView,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import LinearGradient from 'react-native-linear-gradient';
+// If you're not using Expo / don't have expo-linear-gradient installed, run:
+// npx expo install expo-linear-gradient
+// or swap the <LinearGradient> wrapper below for a plain <View style={styles.container}>.
 
-const STORAGE_KEY = 'SchuberAdmin';
+const STORAGE_KEY = 'SchuberDriver';
 
 export default function SignUpScreen({ navigation }) {
   const [name, setName] = useState('');
@@ -52,13 +56,11 @@ export default function SignUpScreen({ navigation }) {
 
     return true;
   };
-
   const performSignUp = async () => {
-    const valid = await validate();
-    if (!valid) return;
-
+    // TEMP: dummy sign-up bypass — skips field validation.
+    // To restore real validation, revert this function.
     setLoading(true);
-
+   
     await AsyncStorage.multiSet([
       [`${STORAGE_KEY}:admin_name`, name],
       [`${STORAGE_KEY}:admin_email`, email],
@@ -84,99 +86,101 @@ export default function SignUpScreen({ navigation }) {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={{ flex: 1 }}
-      >
-        <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
+    <LinearGradient colors={['#FFF7E1', '#FCE7B8']} style={styles.container}>
+      <SafeAreaView style={styles.flexFill}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={{ flex: 1 }}
+        >
+          <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
 
-          {/* Title */}
-          <Text style={styles.appName}>🚌 Schuber Admin</Text>
-          <Text style={styles.subtitle}>Create Admin Account</Text>
+            {/* Title */}
+            <Text style={styles.appName}>🚌 Schuber Admin</Text>
+            <Text style={styles.subtitle}>Create Admin Account</Text>
 
-          {/* Card */}
-          <View style={styles.card}>
-            <Text style={styles.cardTitle}>Sign Up</Text>
+            {/* Card */}
+            <View style={styles.card}>
+              <Text style={styles.cardTitle}>Sign Up</Text>
 
-            {/* Name */}
-            <Field
-              label="Full Name"
-              placeholder="Super Admin"
-              value={name}
-              onChangeText={(t) => { setName(t); clearError('name'); }}
-              error={errors.name}
-            />
+              {/* Name */}
+              <Field
+                label="Full Name"
+                placeholder="Super Admin"
+                value={name}
+                onChangeText={(t) => { setName(t); clearError('name'); }}
+                error={errors.name}
+              />
 
-            {/* Email */}
-            <Field
-              label="Email"
-              placeholder="admin@schuber.com"
-              value={email}
-              onChangeText={(t) => { setEmail(t); clearError('email'); }}
-              error={errors.email}
-              keyboardType="email-address"
-              autoCapitalize="none"
-            />
+              {/* Email */}
+              <Field
+                label="Email"
+                placeholder="admin@schuber.com"
+                value={email}
+                onChangeText={(t) => { setEmail(t); clearError('email'); }}
+                error={errors.email}
+                keyboardType="email-address"
+                autoCapitalize="none"
+              />
 
-            {/* Phone */}
-            <Field
-              label="Phone"
-              placeholder="+91 98765 00000"
-              value={phone}
-              onChangeText={(t) => { setPhone(t); clearError('phone'); }}
-              error={errors.phone}
-              keyboardType="phone-pad"
-            />
+              {/* Phone */}
+              <Field
+                label="Phone"
+                placeholder="+91 98765 00000"
+                value={phone}
+                onChangeText={(t) => { setPhone(t); clearError('phone'); }}
+                error={errors.phone}
+                keyboardType="phone-pad"
+              />
 
-            {/* Password */}
-            <Field
-              label="Password"
-              placeholder="••••••"
-              value={password}
-              onChangeText={(t) => { setPassword(t); clearError('password'); }}
-              error={errors.password}
-              secureTextEntry
-            />
+              {/* Password */}
+              <Field
+                label="Password"
+                placeholder="••••••"
+                value={password}
+                onChangeText={(t) => { setPassword(t); clearError('password'); }}
+                error={errors.password}
+                secureTextEntry
+              />
 
-            {/* Confirm Password */}
-            <Field
-              label="Confirm Password"
-              placeholder="••••••"
-              value={confirmPassword}
-              onChangeText={(t) => { setConfirmPassword(t); clearError('confirmPassword'); }}
-              error={errors.confirmPassword}
-              secureTextEntry
-            />
+              {/* Confirm Password */}
+              <Field
+                label="Confirm Password"
+                placeholder="••••••"
+                value={confirmPassword}
+                onChangeText={(t) => { setConfirmPassword(t); clearError('confirmPassword'); }}
+                error={errors.confirmPassword}
+                secureTextEntry
+              />
 
-            {/* Sign Up Button */}
-            <TouchableOpacity
-              style={[styles.signupBtn, loading && styles.btnDisabled]}
-              onPress={performSignUp}
-              disabled={loading}
-              activeOpacity={0.85}
-            >
-              {loading ? (
-                <ActivityIndicator color="#fff" />
-              ) : (
-                <Text style={styles.signupBtnText}>CREATE ACCOUNT</Text>
-              )}
-            </TouchableOpacity>
+              {/* Sign Up Button */}
+              <TouchableOpacity
+                style={[styles.signupBtn, loading && styles.btnDisabled]}
+                onPress={performSignUp}
+                disabled={loading}
+                activeOpacity={0.85}
+              >
+                {loading ? (
+                  <ActivityIndicator color="#fff" />
+                ) : (
+                  <Text style={styles.signupBtnText}>CREATE ACCOUNT</Text>
+                )}
+              </TouchableOpacity>
 
-            {/* Login Link */}
-            <TouchableOpacity
-              onPress={() => navigation.replace('Login')}
-              style={styles.loginWrap}
-            >
-              <Text style={styles.loginText}>
-                Already have an account?{' '}
-                <Text style={styles.loginLink}>Login</Text>
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+              {/* Login Link */}
+              <TouchableOpacity
+                onPress={() => navigation.replace('Login')}
+                style={styles.loginWrap}
+              >
+                <Text style={styles.loginText}>
+                  Already have an account?{' '}
+                  <Text style={styles.loginLink}>Login</Text>
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </LinearGradient>
   );
 }
 
@@ -187,7 +191,7 @@ function Field({ label, placeholder, value, onChangeText, error, secureTextEntry
       <TextInput
         style={[styles.input, error ? styles.inputError : null]}
         placeholder={placeholder}
-        placeholderTextColor="#aaa"
+        placeholderTextColor="#9B9B9B"
         value={value}
         onChangeText={onChangeText}
         secureTextEntry={secureTextEntry}
@@ -202,7 +206,9 @@ function Field({ label, placeholder, value, onChangeText, error, secureTextEntry
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0f172a',
+  },
+  flexFill: {
+    flex: 1,
   },
   scroll: {
     flexGrow: 1,
@@ -214,30 +220,32 @@ const styles = StyleSheet.create({
   appName: {
     fontSize: 28,
     fontWeight: '800',
-    color: '#f8fafc',
+    color: '#1F1B24',
     letterSpacing: 1,
     marginBottom: 4,
   },
   subtitle: {
     fontSize: 14,
-    color: '#94a3b8',
+    color: '#6B6B6B',
     marginBottom: 32,
   },
   card: {
     width: '100%',
-    backgroundColor: '#1e293b',
+    backgroundColor: '#FFFFFF',
     borderRadius: 20,
     padding: 28,
-    shadowColor: '#000',
+    borderWidth: 1,
+    borderColor: '#EFEAE0',
+    shadowColor: '#4E3A85',
     shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.4,
+    shadowOpacity: 0.15,
     shadowRadius: 16,
     elevation: 10,
   },
   cardTitle: {
     fontSize: 22,
     fontWeight: '700',
-    color: '#f1f5f9',
+    color: '#1F1B24',
     marginBottom: 20,
     textAlign: 'center',
   },
@@ -246,32 +254,32 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 13,
-    color: '#94a3b8',
+    color: '#6B6B6B',
     marginBottom: 6,
     fontWeight: '600',
     letterSpacing: 0.5,
   },
   input: {
-    backgroundColor: '#0f172a',
+    backgroundColor: '#F6F6F6',
     borderWidth: 1,
-    borderColor: '#334155',
+    borderColor: '#EFEAE0',
     borderRadius: 10,
     paddingHorizontal: 16,
     paddingVertical: 12,
-    color: '#f1f5f9',
+    color: '#1F1B24',
     fontSize: 15,
     marginBottom: 4,
   },
   inputError: {
-    borderColor: '#ef4444',
+    borderColor: '#E14434',
   },
   errorText: {
-    color: '#ef4444',
+    color: '#E14434',
     fontSize: 12,
     marginBottom: 8,
   },
   signupBtn: {
-    backgroundColor: '#10b981',
+    backgroundColor: '#2FAE60',
     borderRadius: 12,
     paddingVertical: 14,
     alignItems: 'center',
@@ -291,11 +299,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   loginText: {
-    color: '#94a3b8',
+    color: '#6B6B6B',
     fontSize: 14,
   },
   loginLink: {
-    color: '#3b82f6',
+    color: '#664EA4',
     fontWeight: '600',
   },
 });

@@ -76,8 +76,9 @@ export default function StudentApprovalScreen({ navigation }) {
 
   const formatDate = (ts) => new Date(ts).toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' });
   const initials = (name) => name.split(' ').slice(0,2).map(w => w[0].toUpperCase()).join('');
-  const statusColor = (s) => s === 'APPROVED' ? '#10b981' : s === 'PENDING' ? '#f59e0b' : '#ef4444';
-  const payColor = (p) => p === 'PAID' ? '#10b981' : '#f59e0b';
+  const statusColor = (s) => s === 'APPROVED' ? '#2FAE60' : s === 'PENDING' ? '#E07C00' : '#E14434';
+  const statusBg = (s) => s === 'APPROVED' ? '#E4F6EB' : s === 'PENDING' ? '#FBE0C6' : '#FCE8E5';
+  const payColor = (p) => p === 'PAID' ? '#2FAE60' : '#E07C00';
 
   return (
     <SafeAreaView style={styles.container}>
@@ -99,11 +100,11 @@ export default function StudentApprovalScreen({ navigation }) {
           <Text style={styles.statLbl}>Total</Text>
         </View>
         <View style={styles.statBox}>
-          <Text style={[styles.statVal, { color:'#f59e0b' }]}>{pending}</Text>
+          <Text style={[styles.statVal, { color:'#E07C00' }]}>{pending}</Text>
           <Text style={styles.statLbl}>Pending</Text>
         </View>
         <View style={styles.statBox}>
-          <Text style={[styles.statVal, { color:'#10b981' }]}>{approved}</Text>
+          <Text style={[styles.statVal, { color:'#2FAE60' }]}>{approved}</Text>
           <Text style={styles.statLbl}>Approved</Text>
         </View>
       </View>
@@ -120,7 +121,7 @@ export default function StudentApprovalScreen({ navigation }) {
         <TextInput
           style={styles.searchInput}
           placeholder="Search by name, class, parent..."
-          placeholderTextColor="#64748b"
+          placeholderTextColor="#9B9B9B"
           value={search}
           onChangeText={setSearch}
         />
@@ -165,7 +166,7 @@ export default function StudentApprovalScreen({ navigation }) {
                 <Text style={styles.cardSub}>{item.className}</Text>
                 <Text style={styles.cardSub}>ID: {item.studentId}</Text>
               </View>
-              <View style={[styles.statusBadge, { backgroundColor: statusColor(item.status) + '22', borderColor: statusColor(item.status) }]}>
+              <View style={[styles.statusBadge, { backgroundColor: statusBg(item.status), borderColor: statusColor(item.status) }]}>
                 <Text style={[styles.statusText, { color: statusColor(item.status) }]}>{item.status}</Text>
               </View>
             </View>
@@ -268,58 +269,58 @@ function ModalRow({ label, value }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex:1, backgroundColor:'#0f172a' },
+  container: { flex:1, backgroundColor:'#FFF7E1' },
   header: { flexDirection:'row', alignItems:'center', justifyContent:'space-between', padding:16, paddingTop:8 },
   backBtn: { padding:8 },
-  backText: { color:'#f1f5f9', fontSize:32, lineHeight:36 },
-  headerTitle: { color:'#f1f5f9', fontSize:18, fontWeight:'700' },
-  exportBtn: { color:'#3b82f6', fontSize:14, fontWeight:'600' },
-  statsRow: { flexDirection:'row', marginHorizontal:16, marginBottom:10, backgroundColor:'#1e293b', borderRadius:12, padding:12 },
+  backText: { color:'#1F1B24', fontSize:32, lineHeight:36 },
+  headerTitle: { color:'#1F1B24', fontSize:18, fontWeight:'700' },
+  exportBtn: { color:'#664EA4', fontSize:14, fontWeight:'600' },
+  statsRow: { flexDirection:'row', marginHorizontal:16, marginBottom:10, backgroundColor:'#FFFFFF', borderRadius:12, padding:12, borderWidth:1, borderColor:'#EFEAE0' },
   statBox: { flex:1, alignItems:'center' },
-  statVal: { color:'#f1f5f9', fontSize:22, fontWeight:'800' },
-  statLbl: { color:'#64748b', fontSize:11, marginTop:2 },
-  pendingBanner: { marginHorizontal:16, backgroundColor:'#f59e0b22', borderRadius:8, padding:10, marginBottom:8, borderWidth:1, borderColor:'#f59e0b55' },
-  pendingBannerText: { color:'#f59e0b', fontSize:13, fontWeight:'600', textAlign:'center' },
+  statVal: { color:'#1F1B24', fontSize:22, fontWeight:'800' },
+  statLbl: { color:'#6B6B6B', fontSize:11, marginTop:2 },
+  pendingBanner: { marginHorizontal:16, backgroundColor:'#FBE0C6', borderRadius:8, padding:10, marginBottom:8, borderWidth:1, borderColor:'#F4941A55' },
+  pendingBannerText: { color:'#E07C00', fontSize:13, fontWeight:'600', textAlign:'center' },
   searchWrap: { marginHorizontal:16, marginBottom:10 },
-  searchInput: { backgroundColor:'#1e293b', borderRadius:10, paddingHorizontal:14, paddingVertical:10, color:'#f1f5f9', fontSize:14, borderWidth:1, borderColor:'#334155' },
-  tabs: { flexDirection:'row', marginHorizontal:16, marginBottom:12, backgroundColor:'#1e293b', borderRadius:10, padding:4 },
+  searchInput: { backgroundColor:'#FFFFFF', borderRadius:10, paddingHorizontal:14, paddingVertical:10, color:'#1F1B24', fontSize:14, borderWidth:1, borderColor:'#EFEAE0' },
+  tabs: { flexDirection:'row', marginHorizontal:16, marginBottom:12, backgroundColor:'#F6F6F6', borderRadius:10, padding:4 },
   tab: { flex:1, paddingVertical:8, borderRadius:8, alignItems:'center' },
-  tabActivePending: { backgroundColor:'#f59e0b' },
-  tabActiveApproved: { backgroundColor:'#10b981' },
-  tabText: { color:'#64748b', fontWeight:'600', fontSize:14 },
+  tabActivePending: { backgroundColor:'#F4941A' },
+  tabActiveApproved: { backgroundColor:'#2FAE60' },
+  tabText: { color:'#6B6B6B', fontWeight:'600', fontSize:14 },
   tabTextActive: { color:'#fff' },
   list: { paddingHorizontal:16, paddingBottom:30 },
   emptyWrap: { alignItems:'center', paddingTop:60 },
   emptyIcon: { fontSize:48, marginBottom:12 },
-  emptyText: { color:'#475569', fontSize:16 },
-  card: { backgroundColor:'#1e293b', borderRadius:14, padding:16, marginBottom:12 },
+  emptyText: { color:'#9B9B9B', fontSize:16 },
+  card: { backgroundColor:'#FFFFFF', borderRadius:14, padding:16, marginBottom:12, borderWidth:1, borderColor:'#EFEAE0' },
   cardHeader: { flexDirection:'row', alignItems:'center', marginBottom:12 },
-  avatar: { width:44, height:44, borderRadius:22, backgroundColor:'#10b981', justifyContent:'center', alignItems:'center', marginRight:12 },
+  avatar: { width:44, height:44, borderRadius:22, backgroundColor:'#664EA4', justifyContent:'center', alignItems:'center', marginRight:12 },
   avatarText: { color:'#fff', fontWeight:'700', fontSize:14 },
   cardInfo: { flex:1 },
-  cardName: { color:'#f1f5f9', fontSize:15, fontWeight:'700' },
-  cardSub: { color:'#64748b', fontSize:12, marginTop:1 },
+  cardName: { color:'#1F1B24', fontSize:15, fontWeight:'700' },
+  cardSub: { color:'#6B6B6B', fontSize:12, marginTop:1 },
   statusBadge: { borderRadius:8, paddingHorizontal:8, paddingVertical:3, borderWidth:1 },
   statusText: { fontSize:11, fontWeight:'700' },
   detailsGrid: { flexDirection:'row', flexWrap:'wrap', marginBottom:12 },
   detailItem: { width:'50%', marginBottom:6 },
-  detailLabel: { color:'#64748b', fontSize:11 },
-  detailValue: { color:'#cbd5e1', fontSize:13, fontWeight:'500' },
+  detailLabel: { color:'#9B9B9B', fontSize:11 },
+  detailValue: { color:'#1F1B24', fontSize:13, fontWeight:'500' },
   actions: { flexDirection:'row', flexWrap:'wrap', gap:8 },
-  btnView: { backgroundColor:'#334155', borderRadius:8, paddingHorizontal:12, paddingVertical:7 },
-  btnViewText: { color:'#f1f5f9', fontSize:12, fontWeight:'600' },
-  btnContact: { backgroundColor:'#1e40af33', borderRadius:8, paddingHorizontal:12, paddingVertical:7, borderWidth:1, borderColor:'#3b82f655' },
-  btnContactText: { color:'#3b82f6', fontSize:12, fontWeight:'600' },
-  btnApprove: { backgroundColor:'#05966922', borderRadius:8, paddingHorizontal:12, paddingVertical:7, borderWidth:1, borderColor:'#10b98155' },
-  btnApproveText: { color:'#10b981', fontSize:12, fontWeight:'600' },
-  btnReject: { backgroundColor:'#ef444422', borderRadius:8, paddingHorizontal:12, paddingVertical:7, borderWidth:1, borderColor:'#ef444455' },
-  btnRejectText: { color:'#ef4444', fontSize:12, fontWeight:'600' },
-  modalOverlay: { flex:1, backgroundColor:'#000000aa', justifyContent:'center', alignItems:'center', padding:20 },
-  modalBox: { backgroundColor:'#1e293b', borderRadius:16, padding:20, width:'100%', maxHeight:'80%' },
-  modalTitle: { color:'#f1f5f9', fontSize:18, fontWeight:'700', marginBottom:16, textAlign:'center' },
-  modalSection: { color:'#94a3b8', fontSize:12, fontWeight:'700', letterSpacing:1, marginTop:12, marginBottom:6 },
+  btnView: { backgroundColor:'#F6F6F6', borderRadius:8, paddingHorizontal:12, paddingVertical:7, borderWidth:1, borderColor:'#EFEAE0' },
+  btnViewText: { color:'#1F1B24', fontSize:12, fontWeight:'600' },
+  btnContact: { backgroundColor:'#664EA422', borderRadius:8, paddingHorizontal:12, paddingVertical:7, borderWidth:1, borderColor:'#664EA455' },
+  btnContactText: { color:'#4E3A85', fontSize:12, fontWeight:'600' },
+  btnApprove: { backgroundColor:'#E4F6EB', borderRadius:8, paddingHorizontal:12, paddingVertical:7, borderWidth:1, borderColor:'#2FAE6055' },
+  btnApproveText: { color:'#2FAE60', fontSize:12, fontWeight:'600' },
+  btnReject: { backgroundColor:'#FCE8E5', borderRadius:8, paddingHorizontal:12, paddingVertical:7, borderWidth:1, borderColor:'#E1443455' },
+  btnRejectText: { color:'#E14434', fontSize:12, fontWeight:'600' },
+  modalOverlay: { flex:1, backgroundColor:'#1F1B24aa', justifyContent:'center', alignItems:'center', padding:20 },
+  modalBox: { backgroundColor:'#FFFFFF', borderRadius:16, padding:20, width:'100%', maxHeight:'80%' },
+  modalTitle: { color:'#1F1B24', fontSize:18, fontWeight:'700', marginBottom:16, textAlign:'center' },
+  modalSection: { color:'#664EA4', fontSize:12, fontWeight:'700', letterSpacing:1, marginTop:12, marginBottom:6 },
   modalRow: { flexDirection:'row', marginBottom:6 },
-  modalLabel: { color:'#64748b', fontSize:13, width:100 },
-  modalValue: { color:'#cbd5e1', fontSize:13, flex:1, fontWeight:'500' },
+  modalLabel: { color:'#9B9B9B', fontSize:13, width:100 },
+  modalValue: { color:'#1F1B24', fontSize:13, flex:1, fontWeight:'500' },
   modalActions: { flexDirection:'row', gap:10, marginTop:16, justifyContent:'flex-end' },
 });

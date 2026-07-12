@@ -104,7 +104,8 @@ export default function PaymentsScreen({ navigation }) {
     await Share.share({ message: sb + body });
   };
 
-  const payColor = (p) => p === 'PAID' ? '#10b981' : '#f59e0b';
+  const payColor = (p) => p === 'PAID' ? '#2FAE60' : '#E07C00';
+  const payBg = (p) => p === 'PAID' ? '#E4F6EB' : '#FBE0C6';
   const methodIcon = (m) => ({ 'UPI':'📱', 'CARD':'💳', 'NET BANKING':'🏦', 'CASH':'💵' }[m] || '💰');
 
   return (
@@ -123,15 +124,15 @@ export default function PaymentsScreen({ navigation }) {
       {/* Stats */}
       <View style={styles.statsRow}>
         <View style={styles.statBox}>
-          <Text style={[styles.statVal, { color:'#10b981', fontSize:16 }]}>{formatAmount(totalRevenue)}</Text>
+          <Text style={[styles.statVal, { color:'#2FAE60', fontSize:16 }]}>{formatAmount(totalRevenue)}</Text>
           <Text style={styles.statLbl}>Total Revenue</Text>
         </View>
         <View style={styles.statBox}>
-          <Text style={[styles.statVal, { color:'#3b82f6' }]}>{activeSubs}</Text>
+          <Text style={[styles.statVal, { color:'#664EA4' }]}>{activeSubs}</Text>
           <Text style={styles.statLbl}>Active Paid</Text>
         </View>
         <View style={styles.statBox}>
-          <Text style={[styles.statVal, { color:'#f59e0b' }]}>{pending}</Text>
+          <Text style={[styles.statVal, { color:'#E07C00' }]}>{pending}</Text>
           <Text style={styles.statLbl}>Pending</Text>
         </View>
       </View>
@@ -141,7 +142,7 @@ export default function PaymentsScreen({ navigation }) {
         <TextInput
           style={styles.searchInput}
           placeholder="Search student, parent, transaction..."
-          placeholderTextColor="#64748b"
+          placeholderTextColor="#9B9B9B"
           value={search}
           onChangeText={setSearch}
         />
@@ -174,7 +175,7 @@ export default function PaymentsScreen({ navigation }) {
                   <Text style={styles.cardName}>{item.studentName}</Text>
                   <Text style={styles.cardSub}>Parent: {item.parentName}</Text>
                 </View>
-                <View style={[styles.statusBadge, { backgroundColor: payColor(item.paymentStatus) + '22', borderColor: payColor(item.paymentStatus) }]}>
+                <View style={[styles.statusBadge, { backgroundColor: payBg(item.paymentStatus), borderColor: payColor(item.paymentStatus) }]}>
                   <Text style={[styles.statusText, { color: payColor(item.paymentStatus) }]}>{item.paymentStatus}</Text>
                 </View>
               </View>
@@ -223,7 +224,7 @@ export default function PaymentsScreen({ navigation }) {
               </View>
               <View style={styles.txnRight}>
                 <Text style={styles.txnAmount}>{formatAmount(item.amount)}</Text>
-                <Text style={[styles.txnStatus, { color: item.status === 'SUCCESS' ? '#10b981' : '#f59e0b' }]}>{item.status}</Text>
+                <Text style={[styles.txnStatus, { color: item.status === 'SUCCESS' ? '#2FAE60' : '#E07C00' }]}>{item.status}</Text>
               </View>
             </TouchableOpacity>
           )}
@@ -296,7 +297,7 @@ export default function PaymentsScreen({ navigation }) {
             <TextInput
               style={styles.fieldInput}
               placeholder="Enter amount"
-              placeholderTextColor="#64748b"
+              placeholderTextColor="#9B9B9B"
               value={recordAmount}
               onChangeText={setRecordAmount}
               keyboardType="numeric"
@@ -305,7 +306,7 @@ export default function PaymentsScreen({ navigation }) {
             <TextInput
               style={styles.fieldInput}
               placeholder="UPI / CASH / CARD / NET BANKING"
-              placeholderTextColor="#64748b"
+              placeholderTextColor="#9B9B9B"
               value={recordMethod}
               onChangeText={setRecordMethod}
               autoCapitalize="characters"
@@ -353,67 +354,67 @@ function Empty({ icon, text }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex:1, backgroundColor:'#0f172a' },
+  container: { flex:1, backgroundColor:'#FFF7E1' },
   header: { flexDirection:'row', alignItems:'center', justifyContent:'space-between', padding:16, paddingTop:8 },
   backBtn: { padding:8 },
-  backText: { color:'#f1f5f9', fontSize:32, lineHeight:36 },
-  headerTitle: { color:'#f1f5f9', fontSize:18, fontWeight:'700' },
-  exportBtn: { color:'#3b82f6', fontSize:14, fontWeight:'600' },
-  statsRow: { flexDirection:'row', marginHorizontal:16, marginBottom:10, backgroundColor:'#1e293b', borderRadius:12, padding:12 },
+  backText: { color:'#1F1B24', fontSize:32, lineHeight:36 },
+  headerTitle: { color:'#1F1B24', fontSize:18, fontWeight:'700' },
+  exportBtn: { color:'#664EA4', fontSize:14, fontWeight:'600' },
+  statsRow: { flexDirection:'row', marginHorizontal:16, marginBottom:10, backgroundColor:'#FFFFFF', borderRadius:12, padding:12, borderWidth:1, borderColor:'#EFEAE0' },
   statBox: { flex:1, alignItems:'center' },
-  statVal: { color:'#f1f5f9', fontSize:22, fontWeight:'800' },
-  statLbl: { color:'#64748b', fontSize:11, marginTop:2 },
+  statVal: { color:'#1F1B24', fontSize:22, fontWeight:'800' },
+  statLbl: { color:'#6B6B6B', fontSize:11, marginTop:2 },
   searchWrap: { marginHorizontal:16, marginBottom:10 },
-  searchInput: { backgroundColor:'#1e293b', borderRadius:10, paddingHorizontal:14, paddingVertical:10, color:'#f1f5f9', fontSize:14, borderWidth:1, borderColor:'#334155' },
-  tabs: { flexDirection:'row', marginHorizontal:16, marginBottom:12, backgroundColor:'#1e293b', borderRadius:10, padding:4 },
+  searchInput: { backgroundColor:'#FFFFFF', borderRadius:10, paddingHorizontal:14, paddingVertical:10, color:'#1F1B24', fontSize:14, borderWidth:1, borderColor:'#EFEAE0' },
+  tabs: { flexDirection:'row', marginHorizontal:16, marginBottom:12, backgroundColor:'#F6F6F6', borderRadius:10, padding:4 },
   tab: { flex:1, paddingVertical:8, borderRadius:8, alignItems:'center' },
-  tabActiveSub: { backgroundColor:'#f59e0b' },
-  tabActiveTxn: { backgroundColor:'#10b981' },
-  tabText: { color:'#64748b', fontWeight:'600', fontSize:13 },
+  tabActiveSub: { backgroundColor:'#F4941A' },
+  tabActiveTxn: { backgroundColor:'#664EA4' },
+  tabText: { color:'#6B6B6B', fontWeight:'600', fontSize:13 },
   tabTextActive: { color:'#fff' },
   list: { paddingHorizontal:16, paddingBottom:30 },
   emptyWrap: { alignItems:'center', paddingTop:60 },
   emptyIcon: { fontSize:48, marginBottom:12 },
-  emptyText: { color:'#475569', fontSize:16 },
-  card: { backgroundColor:'#1e293b', borderRadius:14, padding:16, marginBottom:12 },
+  emptyText: { color:'#9B9B9B', fontSize:16 },
+  card: { backgroundColor:'#FFFFFF', borderRadius:14, padding:16, marginBottom:12, borderWidth:1, borderColor:'#EFEAE0' },
   cardHeader: { flexDirection:'row', alignItems:'center', marginBottom:12 },
   avatar: { width:44, height:44, borderRadius:22, justifyContent:'center', alignItems:'center', marginRight:12 },
   avatarText: { color:'#fff', fontWeight:'700', fontSize:14 },
   cardInfo: { flex:1 },
-  cardName: { color:'#f1f5f9', fontSize:15, fontWeight:'700' },
-  cardSub: { color:'#64748b', fontSize:12, marginTop:1 },
+  cardName: { color:'#1F1B24', fontSize:15, fontWeight:'700' },
+  cardSub: { color:'#6B6B6B', fontSize:12, marginTop:1 },
   statusBadge: { borderRadius:8, paddingHorizontal:8, paddingVertical:3, borderWidth:1 },
   statusText: { fontSize:11, fontWeight:'700' },
   detailsGrid: { flexDirection:'row', flexWrap:'wrap', marginBottom:12 },
   detailItem: { width:'50%', marginBottom:6 },
-  detailLabel: { color:'#64748b', fontSize:11 },
-  detailValue: { color:'#cbd5e1', fontSize:13, fontWeight:'500' },
+  detailLabel: { color:'#9B9B9B', fontSize:11 },
+  detailValue: { color:'#1F1B24', fontSize:13, fontWeight:'500' },
   actions: { flexDirection:'row', flexWrap:'wrap', gap:8 },
-  btnView: { backgroundColor:'#334155', borderRadius:8, paddingHorizontal:12, paddingVertical:7 },
-  btnViewText: { color:'#f1f5f9', fontSize:12, fontWeight:'600' },
-  btnRecord: { backgroundColor:'#1e40af33', borderRadius:8, paddingHorizontal:12, paddingVertical:7, borderWidth:1, borderColor:'#3b82f655' },
-  btnRecordText: { color:'#3b82f6', fontSize:12, fontWeight:'600' },
-  btnPaid: { backgroundColor:'#05966922', borderRadius:8, paddingHorizontal:12, paddingVertical:7, borderWidth:1, borderColor:'#10b98155' },
-  btnPaidText: { color:'#10b981', fontSize:12, fontWeight:'600' },
-  btnRemind: { backgroundColor:'#78350f33', borderRadius:8, paddingHorizontal:12, paddingVertical:7, borderWidth:1, borderColor:'#f59e0b55' },
-  btnRemindText: { color:'#f59e0b', fontSize:12, fontWeight:'600' },
-  txnCard: { backgroundColor:'#1e293b', borderRadius:12, padding:14, marginBottom:10, flexDirection:'row', alignItems:'center', justifyContent:'space-between' },
+  btnView: { backgroundColor:'#F6F6F6', borderRadius:8, paddingHorizontal:12, paddingVertical:7, borderWidth:1, borderColor:'#EFEAE0' },
+  btnViewText: { color:'#1F1B24', fontSize:12, fontWeight:'600' },
+  btnRecord: { backgroundColor:'#664EA422', borderRadius:8, paddingHorizontal:12, paddingVertical:7, borderWidth:1, borderColor:'#664EA455' },
+  btnRecordText: { color:'#4E3A85', fontSize:12, fontWeight:'600' },
+  btnPaid: { backgroundColor:'#E4F6EB', borderRadius:8, paddingHorizontal:12, paddingVertical:7, borderWidth:1, borderColor:'#2FAE6055' },
+  btnPaidText: { color:'#2FAE60', fontSize:12, fontWeight:'600' },
+  btnRemind: { backgroundColor:'#FBE0C6', borderRadius:8, paddingHorizontal:12, paddingVertical:7, borderWidth:1, borderColor:'#F4941A55' },
+  btnRemindText: { color:'#E07C00', fontSize:12, fontWeight:'600' },
+  txnCard: { backgroundColor:'#FFFFFF', borderRadius:12, padding:14, marginBottom:10, flexDirection:'row', alignItems:'center', justifyContent:'space-between', borderWidth:1, borderColor:'#EFEAE0' },
   txnLeft: { flexDirection:'row', alignItems:'center', flex:1 },
   txnIcon: { fontSize:28, marginRight:12 },
-  txnId: { color:'#94a3b8', fontSize:11, fontWeight:'600' },
-  txnName: { color:'#f1f5f9', fontSize:13, fontWeight:'600', marginTop:1 },
-  txnDate: { color:'#64748b', fontSize:11, marginTop:1 },
+  txnId: { color:'#6B6B6B', fontSize:11, fontWeight:'600' },
+  txnName: { color:'#1F1B24', fontSize:13, fontWeight:'600', marginTop:1 },
+  txnDate: { color:'#9B9B9B', fontSize:11, marginTop:1 },
   txnRight: { alignItems:'flex-end' },
-  txnAmount: { color:'#10b981', fontSize:15, fontWeight:'800' },
+  txnAmount: { color:'#2FAE60', fontSize:15, fontWeight:'800' },
   txnStatus: { fontSize:11, fontWeight:'700', marginTop:2 },
-  modalOverlay: { flex:1, backgroundColor:'#000000aa', justifyContent:'center', alignItems:'center', padding:20 },
-  modalBox: { backgroundColor:'#1e293b', borderRadius:16, padding:20, width:'100%', maxHeight:'85%' },
-  modalTitle: { color:'#f1f5f9', fontSize:18, fontWeight:'700', marginBottom:4, textAlign:'center' },
-  modalSubtitle: { color:'#64748b', fontSize:13, textAlign:'center', marginBottom:12 },
+  modalOverlay: { flex:1, backgroundColor:'#1F1B24aa', justifyContent:'center', alignItems:'center', padding:20 },
+  modalBox: { backgroundColor:'#FFFFFF', borderRadius:16, padding:20, width:'100%', maxHeight:'85%' },
+  modalTitle: { color:'#1F1B24', fontSize:18, fontWeight:'700', marginBottom:4, textAlign:'center' },
+  modalSubtitle: { color:'#6B6B6B', fontSize:13, textAlign:'center', marginBottom:12 },
   modalRow: { flexDirection:'row', marginBottom:8 },
-  modalLabel: { color:'#64748b', fontSize:13, width:80 },
-  modalValue: { color:'#cbd5e1', fontSize:13, flex:1, fontWeight:'500' },
+  modalLabel: { color:'#9B9B9B', fontSize:13, width:80 },
+  modalValue: { color:'#1F1B24', fontSize:13, flex:1, fontWeight:'500' },
   modalActions: { flexDirection:'row', gap:10, marginTop:16, justifyContent:'flex-end', flexWrap:'wrap' },
-  fieldLabel: { color:'#94a3b8', fontSize:12, fontWeight:'600', marginBottom:6, marginTop:12 },
-  fieldInput: { backgroundColor:'#0f172a', borderWidth:1, borderColor:'#334155', borderRadius:10, padding:12, color:'#f1f5f9', fontSize:14 },
+  fieldLabel: { color:'#6B6B6B', fontSize:12, fontWeight:'600', marginBottom:6, marginTop:12 },
+  fieldInput: { backgroundColor:'#F6F6F6', borderWidth:1, borderColor:'#EFEAE0', borderRadius:10, padding:12, color:'#1F1B24', fontSize:14 },
 });

@@ -19,11 +19,37 @@ const DUMMY_STUDENTS = [
   { id:'12', studentId:'STU012', name:'Sia Bhatia', className:'Class 1-A', parentName:'Ankit Bhatia', parentPhone:'+91 98765 40012', parentEmail:'ankit.bhatia@email.com', pickupLocation:'Vasant Kunj', dropLocation:'Vasant Kunj', subscriptionPlan:'Monthly', paymentStatus:'PAID', status:'ACTIVE', isActive:true, driverName:'Rajesh Kumar', vehicleNumber:'KA-01-AB-1234', registrationDate: Date.now()-25*86400000 },
 ];
 
+// ---- Theme tokens ----
+const COLORS = {
+  purpleDark: '#4E3A85',
+  purple: '#664EA4',
+  purpleLight: '#8673C4',
+  orangeDark: '#E07C00',
+  orange: '#F4941A',
+  orangeLight: '#FDBB63',
+  bgTop: '#FFF7E1',
+  bgBottom: '#FCE7B8',
+  textPrimary: '#1F1B24',
+  textSecondary: '#6B6B6B',
+  textMuted: '#9B9B9B',
+  success: '#2FAE60',
+  successBg: '#E4F6EB',
+  danger: '#E14434',
+  dangerBg: '#FCE8E5',
+  absent: '#E0631B',
+  absentBg: '#FBE0C6',
+  border: '#EFEAE0',
+  cardMuted: '#F6F6F6',
+  white: '#FFFFFF',
+};
+
 const initials = (name) => name.split(' ').slice(0,2).map(w => w[0].toUpperCase()).join('');
 const formatDate = (ts) => new Date(ts).toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' });
 const formatMonthYear = (ts) => new Date(ts).toLocaleDateString('en-IN', { month:'short', year:'numeric' });
-const payColor = (p) => p === 'PAID' ? '#10b981' : '#f59e0b';
-const statusColor = (s) => s === 'ACTIVE' ? '#10b981' : '#ef4444';
+const payColor = (p) => p === 'PAID' ? COLORS.success : COLORS.absent;
+const payBg = (p) => p === 'PAID' ? COLORS.successBg : COLORS.absentBg;
+const statusColor = (s) => s === 'ACTIVE' ? COLORS.success : COLORS.danger;
+const statusBg = (s) => s === 'ACTIVE' ? COLORS.successBg : COLORS.dangerBg;
 
 export default function StudentDetailsScreen({ navigation }) {
   const [students, setStudents] = useState(DUMMY_STUDENTS);
@@ -94,11 +120,11 @@ export default function StudentDetailsScreen({ navigation }) {
           <Text style={styles.statLbl}>Total</Text>
         </View>
         <View style={styles.statBox}>
-          <Text style={[styles.statVal, { color:'#10b981' }]}>{active}</Text>
+          <Text style={[styles.statVal, { color: COLORS.success }]}>{active}</Text>
           <Text style={styles.statLbl}>Active</Text>
         </View>
         <View style={styles.statBox}>
-          <Text style={[styles.statVal, { color:'#f59e0b' }]}>{pendingPayment}</Text>
+          <Text style={[styles.statVal, { color: COLORS.orangeDark }]}>{pendingPayment}</Text>
           <Text style={styles.statLbl}>Pending Pay</Text>
         </View>
       </View>
@@ -108,7 +134,7 @@ export default function StudentDetailsScreen({ navigation }) {
         <TextInput
           style={styles.searchInput}
           placeholder="Search by name, class, parent..."
-          placeholderTextColor="#64748b"
+          placeholderTextColor={COLORS.textMuted}
           value={search}
           onChangeText={setSearch}
         />
@@ -136,7 +162,7 @@ export default function StudentDetailsScreen({ navigation }) {
           <View style={styles.card}>
             {/* Header */}
             <View style={styles.cardHeader}>
-              <View style={[styles.avatar, { backgroundColor: statusColor(item.status) }]}>
+              <View style={[styles.avatar, { backgroundColor: COLORS.purple }]}>
                 <Text style={styles.avatarText}>{initials(item.name)}</Text>
               </View>
               <View style={styles.cardInfo}>
@@ -144,7 +170,7 @@ export default function StudentDetailsScreen({ navigation }) {
                 <Text style={styles.cardSub}>{item.className}</Text>
                 <Text style={styles.cardSub}>ID: {item.studentId}</Text>
               </View>
-              <View style={[styles.statusBadge, { backgroundColor: statusColor(item.status) + '22', borderColor: statusColor(item.status) }]}>
+              <View style={[styles.statusBadge, { backgroundColor: statusBg(item.status), borderColor: statusColor(item.status) }]}>
                 <Text style={[styles.statusText, { color: statusColor(item.status) }]}>{item.status}</Text>
               </View>
             </View>
@@ -189,7 +215,7 @@ export default function StudentDetailsScreen({ navigation }) {
                   style={[styles.filterOption, classFilter === c && styles.filterOptionActive]}
                   onPress={() => { setClassFilter(c); setShowClassMenu(false); }}
                 >
-                  <Text style={[styles.filterOptionText, classFilter === c && { color:'#3b82f6' }]}>{c}</Text>
+                  <Text style={[styles.filterOptionText, classFilter === c && { color: COLORS.purple, fontWeight:'700' }]}>{c}</Text>
                 </TouchableOpacity>
               ))}
             </ScrollView>
@@ -268,57 +294,57 @@ function ModalRow({ label, value }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex:1, backgroundColor:'#0f172a' },
+  container: { flex:1, backgroundColor: COLORS.bgTop },
   header: { flexDirection:'row', alignItems:'center', justifyContent:'space-between', padding:16, paddingTop:8 },
   backBtn: { padding:8 },
-  backText: { color:'#f1f5f9', fontSize:32, lineHeight:36 },
-  headerTitle: { color:'#f1f5f9', fontSize:18, fontWeight:'700' },
-  exportBtn: { color:'#3b82f6', fontSize:14, fontWeight:'600' },
-  statsRow: { flexDirection:'row', marginHorizontal:16, marginBottom:10, backgroundColor:'#1e293b', borderRadius:12, padding:12 },
+  backText: { color: COLORS.purpleDark, fontSize:32, lineHeight:36 },
+  headerTitle: { color: COLORS.textPrimary, fontSize:18, fontWeight:'700' },
+  exportBtn: { color: COLORS.purple, fontSize:14, fontWeight:'700' },
+  statsRow: { flexDirection:'row', marginHorizontal:16, marginBottom:10, backgroundColor: COLORS.white, borderRadius:12, padding:12, borderWidth:1, borderColor: COLORS.border },
   statBox: { flex:1, alignItems:'center' },
-  statVal: { color:'#f1f5f9', fontSize:22, fontWeight:'800' },
-  statLbl: { color:'#64748b', fontSize:11, marginTop:2 },
+  statVal: { color: COLORS.purpleDark, fontSize:22, fontWeight:'800' },
+  statLbl: { color: COLORS.textSecondary, fontSize:11, marginTop:2 },
   searchRow: { flexDirection:'row', marginHorizontal:16, marginBottom:6, gap:8 },
-  searchInput: { flex:1, backgroundColor:'#1e293b', borderRadius:10, paddingHorizontal:14, paddingVertical:10, color:'#f1f5f9', fontSize:14, borderWidth:1, borderColor:'#334155' },
-  filterBtn: { backgroundColor:'#1e293b', borderRadius:10, paddingHorizontal:12, paddingVertical:10, borderWidth:1, borderColor:'#334155', justifyContent:'center', minWidth:70 },
-  filterBtnText: { color:'#94a3b8', fontSize:12, fontWeight:'600' },
-  countText: { color:'#64748b', fontSize:12, marginHorizontal:20, marginBottom:8 },
+  searchInput: { flex:1, backgroundColor: COLORS.white, borderRadius:10, paddingHorizontal:14, paddingVertical:10, color: COLORS.textPrimary, fontSize:14, borderWidth:1, borderColor: COLORS.border },
+  filterBtn: { backgroundColor: COLORS.purpleLight + '22', borderRadius:10, paddingHorizontal:12, paddingVertical:10, borderWidth:1, borderColor: COLORS.purpleLight, justifyContent:'center', minWidth:70 },
+  filterBtnText: { color: COLORS.purpleDark, fontSize:12, fontWeight:'700' },
+  countText: { color: COLORS.textSecondary, fontSize:12, marginHorizontal:20, marginBottom:8 },
   list: { paddingHorizontal:16, paddingBottom:30 },
   emptyWrap: { alignItems:'center', paddingTop:60 },
   emptyIcon: { fontSize:48, marginBottom:12 },
-  emptyText: { color:'#475569', fontSize:16 },
-  card: { backgroundColor:'#1e293b', borderRadius:14, padding:16, marginBottom:12 },
+  emptyText: { color: COLORS.textMuted, fontSize:16 },
+  card: { backgroundColor: COLORS.white, borderRadius:14, padding:16, marginBottom:12, borderWidth:1, borderColor: COLORS.border },
   cardHeader: { flexDirection:'row', alignItems:'center', marginBottom:12 },
   avatar: { width:44, height:44, borderRadius:22, justifyContent:'center', alignItems:'center', marginRight:12 },
-  avatarText: { color:'#fff', fontWeight:'700', fontSize:14 },
+  avatarText: { color: COLORS.white, fontWeight:'700', fontSize:14 },
   cardInfo: { flex:1 },
-  cardName: { color:'#f1f5f9', fontSize:15, fontWeight:'700' },
-  cardSub: { color:'#64748b', fontSize:12, marginTop:1 },
+  cardName: { color: COLORS.textPrimary, fontSize:15, fontWeight:'700' },
+  cardSub: { color: COLORS.textSecondary, fontSize:12, marginTop:1 },
   statusBadge: { borderRadius:8, paddingHorizontal:8, paddingVertical:3, borderWidth:1 },
   statusText: { fontSize:11, fontWeight:'700' },
   detailsGrid: { flexDirection:'row', flexWrap:'wrap', marginBottom:12 },
   detailItem: { width:'50%', marginBottom:6 },
-  detailLabel: { color:'#64748b', fontSize:11 },
-  detailValue: { color:'#cbd5e1', fontSize:13, fontWeight:'500' },
+  detailLabel: { color: COLORS.textMuted, fontSize:11 },
+  detailValue: { color: COLORS.textPrimary, fontSize:13, fontWeight:'500' },
   actions: { flexDirection:'row', flexWrap:'wrap', gap:8 },
-  btnView: { backgroundColor:'#334155', borderRadius:8, paddingHorizontal:12, paddingVertical:7 },
-  btnViewText: { color:'#f1f5f9', fontSize:12, fontWeight:'600' },
-  btnContact: { backgroundColor:'#1e40af33', borderRadius:8, paddingHorizontal:12, paddingVertical:7, borderWidth:1, borderColor:'#3b82f655' },
-  btnContactText: { color:'#3b82f6', fontSize:12, fontWeight:'600' },
-  btnPayment: { backgroundColor:'#78350f33', borderRadius:8, paddingHorizontal:12, paddingVertical:7, borderWidth:1, borderColor:'#f59e0b55' },
-  btnPaymentText: { color:'#f59e0b', fontSize:12, fontWeight:'600' },
-  modalOverlay: { flex:1, backgroundColor:'#000000aa', justifyContent:'center', alignItems:'center' },
-  filterMenu: { backgroundColor:'#1e293b', borderRadius:16, padding:20, width:240 },
-  filterMenuTitle: { color:'#f1f5f9', fontSize:15, fontWeight:'700', marginBottom:12 },
+  btnView: { backgroundColor: COLORS.cardMuted, borderRadius:8, paddingHorizontal:12, paddingVertical:7, borderWidth:1, borderColor: COLORS.border },
+  btnViewText: { color: COLORS.textPrimary, fontSize:12, fontWeight:'700' },
+  btnContact: { backgroundColor: COLORS.purple + '1A', borderRadius:8, paddingHorizontal:12, paddingVertical:7, borderWidth:1, borderColor: COLORS.purple + '55' },
+  btnContactText: { color: COLORS.purpleDark, fontSize:12, fontWeight:'700' },
+  btnPayment: { backgroundColor: COLORS.orange + '1A', borderRadius:8, paddingHorizontal:12, paddingVertical:7, borderWidth:1, borderColor: COLORS.orange + '66' },
+  btnPaymentText: { color: COLORS.orangeDark, fontSize:12, fontWeight:'700' },
+  modalOverlay: { flex:1, backgroundColor:'#1F1B24aa', justifyContent:'center', alignItems:'center' },
+  filterMenu: { backgroundColor: COLORS.white, borderRadius:16, padding:20, width:240, borderWidth:1, borderColor: COLORS.border },
+  filterMenuTitle: { color: COLORS.textPrimary, fontSize:15, fontWeight:'700', marginBottom:12 },
   filterOption: { paddingVertical:10, paddingHorizontal:8, borderRadius:8 },
-  filterOptionActive: { backgroundColor:'#3b82f622' },
-  filterOptionText: { color:'#cbd5e1', fontSize:14 },
-  detailOverlay: { flex:1, backgroundColor:'#000000aa', justifyContent:'center', alignItems:'center', padding:20 },
-  detailBox: { backgroundColor:'#1e293b', borderRadius:16, padding:20, width:'100%', maxHeight:'85%' },
-  modalTitle: { color:'#f1f5f9', fontSize:18, fontWeight:'700', marginBottom:16, textAlign:'center' },
-  modalSection: { color:'#94a3b8', fontSize:12, fontWeight:'700', letterSpacing:1, marginTop:12, marginBottom:6 },
+  filterOptionActive: { backgroundColor: COLORS.purple + '1A' },
+  filterOptionText: { color: COLORS.textSecondary, fontSize:14 },
+  detailOverlay: { flex:1, backgroundColor:'#1F1B24aa', justifyContent:'center', alignItems:'center', padding:20 },
+  detailBox: { backgroundColor: COLORS.white, borderRadius:16, padding:20, width:'100%', maxHeight:'85%', borderWidth:1, borderColor: COLORS.border },
+  modalTitle: { color: COLORS.purpleDark, fontSize:18, fontWeight:'700', marginBottom:16, textAlign:'center' },
+  modalSection: { color: COLORS.purple, fontSize:12, fontWeight:'700', letterSpacing:1, marginTop:12, marginBottom:6 },
   modalRow: { flexDirection:'row', marginBottom:6 },
-  modalLabel: { color:'#64748b', fontSize:13, width:100 },
-  modalValue: { color:'#cbd5e1', fontSize:13, flex:1, fontWeight:'500' },
+  modalLabel: { color: COLORS.textMuted, fontSize:13, width:100 },
+  modalValue: { color: COLORS.textPrimary, fontSize:13, flex:1, fontWeight:'500' },
   modalActions: { flexDirection:'row', gap:8, marginTop:16, justifyContent:'flex-end', flexWrap:'wrap' },
 });

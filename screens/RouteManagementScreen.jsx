@@ -113,11 +113,11 @@ export default function RouteManagementScreen({ navigation }) {
           <Text style={styles.statLbl}>Total</Text>
         </View>
         <View style={styles.statBox}>
-          <Text style={[styles.statVal, { color:'#10b981' }]}>{active}</Text>
+          <Text style={[styles.statVal, { color:'#2FAE60' }]}>{active}</Text>
           <Text style={styles.statLbl}>Active</Text>
         </View>
         <View style={styles.statBox}>
-          <Text style={[styles.statVal, { color:'#3b82f6' }]}>{assigned}</Text>
+          <Text style={[styles.statVal, { color:'#664EA4' }]}>{assigned}</Text>
           <Text style={styles.statLbl}>Assigned</Text>
         </View>
       </View>
@@ -127,7 +127,7 @@ export default function RouteManagementScreen({ navigation }) {
         <TextInput
           style={styles.searchInput}
           placeholder="Search by route name, ID, driver..."
-          placeholderTextColor="#64748b"
+          placeholderTextColor="#9B9B9B"
           value={search}
           onChangeText={setSearch}
         />
@@ -155,8 +155,8 @@ export default function RouteManagementScreen({ navigation }) {
                 <Text style={styles.cardName}>{item.name}</Text>
                 <Text style={styles.cardSub}>ID: {item.routeId} · {item.stopsArray.length} stops · {item.studentCount} students</Text>
               </View>
-              <View style={[styles.statusBadge, { backgroundColor: item.isActive ? '#10b98122' : '#64748b22', borderColor: item.isActive ? '#10b981' : '#64748b' }]}>
-                <Text style={[styles.statusText, { color: item.isActive ? '#10b981' : '#64748b' }]}>{item.isActive ? 'ACTIVE' : 'INACTIVE'}</Text>
+              <View style={[styles.statusBadge, { backgroundColor: item.isActive ? '#E4F6EB' : '#F6F6F6', borderColor: item.isActive ? '#2FAE60' : '#9B9B9B' }]}>
+                <Text style={[styles.statusText, { color: item.isActive ? '#2FAE60' : '#9B9B9B' }]}>{item.isActive ? 'ACTIVE' : 'INACTIVE'}</Text>
               </View>
             </View>
 
@@ -187,10 +187,10 @@ export default function RouteManagementScreen({ navigation }) {
                 <Text style={styles.btnStopsText}>📍 Stops</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={[styles.btnToggle, { borderColor: item.isActive ? '#ef444455' : '#10b98155', backgroundColor: item.isActive ? '#ef444411' : '#10b98111' }]}
+                style={[styles.btnToggle, { borderColor: item.isActive ? '#E1443455' : '#2FAE6055', backgroundColor: item.isActive ? '#FCE8E5' : '#E4F6EB' }]}
                 onPress={() => toggleStatus(item)}
               >
-                <Text style={[styles.btnToggleText, { color: item.isActive ? '#ef4444' : '#10b981' }]}>
+                <Text style={[styles.btnToggleText, { color: item.isActive ? '#E14434' : '#2FAE60' }]}>
                   {item.isActive ? '⏸ Deactivate' : '▶ Activate'}
                 </Text>
               </TouchableOpacity>
@@ -233,7 +233,7 @@ export default function RouteManagementScreen({ navigation }) {
             <TextInput
               style={styles.fieldInput}
               placeholder="e.g. Route K - Airport"
-              placeholderTextColor="#64748b"
+              placeholderTextColor="#9B9B9B"
               value={formName}
               onChangeText={setFormName}
             />
@@ -241,7 +241,7 @@ export default function RouteManagementScreen({ navigation }) {
             <TextInput
               style={[styles.fieldInput, { minHeight: 80, textAlignVertical:'top' }]}
               placeholder="School Gate, Stop 1, Stop 2..."
-              placeholderTextColor="#64748b"
+              placeholderTextColor="#9B9B9B"
               value={formStops}
               onChangeText={setFormStops}
               multiline
@@ -292,64 +292,64 @@ export default function RouteManagementScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex:1, backgroundColor:'#0f172a' },
+  container: { flex:1, backgroundColor:'#FFF7E1' },
   header: { flexDirection:'row', alignItems:'center', justifyContent:'space-between', padding:16, paddingTop:8 },
   backBtn: { padding:8 },
-  backText: { color:'#f1f5f9', fontSize:32, lineHeight:36 },
-  headerTitle: { color:'#f1f5f9', fontSize:18, fontWeight:'700' },
-  addBtn: { backgroundColor:'#3b82f6', borderRadius:8, paddingHorizontal:14, paddingVertical:7 },
+  backText: { color:'#1F1B24', fontSize:32, lineHeight:36 },
+  headerTitle: { color:'#1F1B24', fontSize:18, fontWeight:'700' },
+  addBtn: { backgroundColor:'#664EA4', borderRadius:8, paddingHorizontal:14, paddingVertical:7 },
   addBtnText: { color:'#fff', fontSize:13, fontWeight:'700' },
-  statsRow: { flexDirection:'row', marginHorizontal:16, marginBottom:10, backgroundColor:'#1e293b', borderRadius:12, padding:12 },
+  statsRow: { flexDirection:'row', marginHorizontal:16, marginBottom:10, backgroundColor:'#FFFFFF', borderRadius:12, padding:12, borderWidth:1, borderColor:'#EFEAE0' },
   statBox: { flex:1, alignItems:'center' },
-  statVal: { color:'#f1f5f9', fontSize:22, fontWeight:'800' },
-  statLbl: { color:'#64748b', fontSize:11, marginTop:2 },
+  statVal: { color:'#1F1B24', fontSize:22, fontWeight:'800' },
+  statLbl: { color:'#6B6B6B', fontSize:11, marginTop:2 },
   searchWrap: { marginHorizontal:16, marginBottom:6 },
-  searchInput: { backgroundColor:'#1e293b', borderRadius:10, paddingHorizontal:14, paddingVertical:10, color:'#f1f5f9', fontSize:14, borderWidth:1, borderColor:'#334155' },
-  countText: { color:'#64748b', fontSize:12, marginHorizontal:20, marginBottom:8 },
+  searchInput: { backgroundColor:'#FFFFFF', borderRadius:10, paddingHorizontal:14, paddingVertical:10, color:'#1F1B24', fontSize:14, borderWidth:1, borderColor:'#EFEAE0' },
+  countText: { color:'#9B9B9B', fontSize:12, marginHorizontal:20, marginBottom:8 },
   list: { paddingHorizontal:16, paddingBottom:30 },
   emptyWrap: { alignItems:'center', paddingTop:60 },
   emptyIcon: { fontSize:48, marginBottom:12 },
-  emptyText: { color:'#475569', fontSize:16 },
-  card: { backgroundColor:'#1e293b', borderRadius:14, padding:16, marginBottom:12 },
+  emptyText: { color:'#9B9B9B', fontSize:16 },
+  card: { backgroundColor:'#FFFFFF', borderRadius:14, padding:16, marginBottom:12, borderWidth:1, borderColor:'#EFEAE0' },
   cardHeader: { flexDirection:'row', alignItems:'center', marginBottom:10 },
   routeIcon: { fontSize:28, marginRight:12 },
   cardInfo: { flex:1 },
-  cardName: { color:'#f1f5f9', fontSize:15, fontWeight:'700' },
-  cardSub: { color:'#64748b', fontSize:12, marginTop:2 },
+  cardName: { color:'#1F1B24', fontSize:15, fontWeight:'700' },
+  cardSub: { color:'#6B6B6B', fontSize:12, marginTop:2 },
   statusBadge: { borderRadius:8, paddingHorizontal:8, paddingVertical:3, borderWidth:1 },
   statusText: { fontSize:10, fontWeight:'700' },
-  stopsWrap: { backgroundColor:'#0f172a', borderRadius:8, padding:10, marginBottom:10 },
-  stopsLabel: { color:'#64748b', fontSize:11, marginBottom:4 },
-  stopsText: { color:'#94a3b8', fontSize:12, lineHeight:18 },
+  stopsWrap: { backgroundColor:'#F6F6F6', borderRadius:8, padding:10, marginBottom:10 },
+  stopsLabel: { color:'#9B9B9B', fontSize:11, marginBottom:4 },
+  stopsText: { color:'#6B6B6B', fontSize:12, lineHeight:18 },
   driverRow: { marginBottom:12 },
   driverInfo: { },
-  driverLabel: { color:'#64748b', fontSize:11 },
-  driverName: { color:'#f1f5f9', fontSize:14, fontWeight:'600', marginTop:2 },
-  vehicleNum: { color:'#64748b', fontSize:12 },
+  driverLabel: { color:'#9B9B9B', fontSize:11 },
+  driverName: { color:'#1F1B24', fontSize:14, fontWeight:'600', marginTop:2 },
+  vehicleNum: { color:'#6B6B6B', fontSize:12 },
   actions: { flexDirection:'row', flexWrap:'wrap', gap:8 },
-  btnEdit: { backgroundColor:'#334155', borderRadius:8, paddingHorizontal:12, paddingVertical:7 },
-  btnEditText: { color:'#f1f5f9', fontSize:12, fontWeight:'600' },
-  btnAssign: { backgroundColor:'#1e40af33', borderRadius:8, paddingHorizontal:12, paddingVertical:7, borderWidth:1, borderColor:'#3b82f655' },
-  btnAssignText: { color:'#3b82f6', fontSize:12, fontWeight:'600' },
-  btnStops: { backgroundColor:'#78350f33', borderRadius:8, paddingHorizontal:12, paddingVertical:7, borderWidth:1, borderColor:'#f59e0b55' },
-  btnStopsText: { color:'#f59e0b', fontSize:12, fontWeight:'600' },
+  btnEdit: { backgroundColor:'#F6F6F6', borderRadius:8, paddingHorizontal:12, paddingVertical:7, borderWidth:1, borderColor:'#EFEAE0' },
+  btnEditText: { color:'#1F1B24', fontSize:12, fontWeight:'600' },
+  btnAssign: { backgroundColor:'#664EA422', borderRadius:8, paddingHorizontal:12, paddingVertical:7, borderWidth:1, borderColor:'#664EA455' },
+  btnAssignText: { color:'#4E3A85', fontSize:12, fontWeight:'600' },
+  btnStops: { backgroundColor:'#FBE0C6', borderRadius:8, paddingHorizontal:12, paddingVertical:7, borderWidth:1, borderColor:'#F4941A55' },
+  btnStopsText: { color:'#E07C00', fontSize:12, fontWeight:'600' },
   btnToggle: { borderRadius:8, paddingHorizontal:12, paddingVertical:7, borderWidth:1 },
   btnToggleText: { fontSize:12, fontWeight:'600' },
-  btnClose: { backgroundColor:'#334155', borderRadius:8, paddingHorizontal:16, paddingVertical:8 },
-  btnCloseText: { color:'#f1f5f9', fontSize:13, fontWeight:'600' },
-  modalOverlay: { flex:1, backgroundColor:'#000000aa', justifyContent:'center', alignItems:'center', padding:20 },
-  modalBox: { backgroundColor:'#1e293b', borderRadius:16, padding:20, width:'100%', maxHeight:'85%' },
-  modalTitle: { color:'#f1f5f9', fontSize:17, fontWeight:'700', marginBottom:4, textAlign:'center' },
-  modalSubtitle: { color:'#64748b', fontSize:13, textAlign:'center', marginBottom:14 },
+  btnClose: { backgroundColor:'#F6F6F6', borderRadius:8, paddingHorizontal:16, paddingVertical:8, borderWidth:1, borderColor:'#EFEAE0' },
+  btnCloseText: { color:'#1F1B24', fontSize:13, fontWeight:'600' },
+  modalOverlay: { flex:1, backgroundColor:'#1F1B24aa', justifyContent:'center', alignItems:'center', padding:20 },
+  modalBox: { backgroundColor:'#FFFFFF', borderRadius:16, padding:20, width:'100%', maxHeight:'85%' },
+  modalTitle: { color:'#1F1B24', fontSize:17, fontWeight:'700', marginBottom:4, textAlign:'center' },
+  modalSubtitle: { color:'#6B6B6B', fontSize:13, textAlign:'center', marginBottom:14 },
   modalActions: { flexDirection:'row', gap:10, marginTop:16, justifyContent:'flex-end' },
-  stopItem: { flexDirection:'row', alignItems:'center', paddingVertical:8, borderBottomWidth:1, borderBottomColor:'#334155' },
-  stopDot: { width:8, height:8, borderRadius:4, backgroundColor:'#3b82f6', marginRight:10 },
-  stopText: { color:'#cbd5e1', fontSize:14 },
-  fieldLabel: { color:'#94a3b8', fontSize:12, fontWeight:'600', marginBottom:6, marginTop:12 },
-  fieldInput: { backgroundColor:'#0f172a', borderWidth:1, borderColor:'#334155', borderRadius:10, padding:12, color:'#f1f5f9', fontSize:14 },
-  driverOption: { flexDirection:'row', alignItems:'center', paddingVertical:12, borderBottomWidth:1, borderBottomColor:'#334155' },
-  driverOptionAvatar: { width:36, height:36, borderRadius:18, backgroundColor:'#3b82f6', justifyContent:'center', alignItems:'center', marginRight:12 },
+  stopItem: { flexDirection:'row', alignItems:'center', paddingVertical:8, borderBottomWidth:1, borderBottomColor:'#EFEAE0' },
+  stopDot: { width:8, height:8, borderRadius:4, backgroundColor:'#664EA4', marginRight:10 },
+  stopText: { color:'#1F1B24', fontSize:14 },
+  fieldLabel: { color:'#6B6B6B', fontSize:12, fontWeight:'600', marginBottom:6, marginTop:12 },
+  fieldInput: { backgroundColor:'#F6F6F6', borderWidth:1, borderColor:'#EFEAE0', borderRadius:10, padding:12, color:'#1F1B24', fontSize:14 },
+  driverOption: { flexDirection:'row', alignItems:'center', paddingVertical:12, borderBottomWidth:1, borderBottomColor:'#EFEAE0' },
+  driverOptionAvatar: { width:36, height:36, borderRadius:18, backgroundColor:'#664EA4', justifyContent:'center', alignItems:'center', marginRight:12 },
   driverOptionAvatarText: { color:'#fff', fontWeight:'700', fontSize:14 },
-  driverOptionName: { color:'#f1f5f9', fontSize:14, fontWeight:'600' },
-  driverOptionVehicle: { color:'#64748b', fontSize:12 },
+  driverOptionName: { color:'#1F1B24', fontSize:14, fontWeight:'600' },
+  driverOptionVehicle: { color:'#6B6B6B', fontSize:12 },
 });
