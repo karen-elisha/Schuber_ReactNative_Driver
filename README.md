@@ -34,21 +34,22 @@ From the project root directory, run the following command to download and build
 npm.cmd install --legacy-peer-deps
 ```
 
-### Step 2: Configure Firebase Credentials
+### Step 2: Configure Environment Credentials
 
-Your Firebase integration uses the config details defined inside `firebase.js` in the project root:
+Because Firebase credentials are excluded from Git tracking for safety, you must create a local `.env` file in the project root:
 
-```javascript
-// firebase.js
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "schuber-12563.firebaseapp.com",
-  projectId: "schuber-12563",
-  storageBucket: "schuber-12563.firebasestorage.app",
-  messagingSenderId: "767178914651",
-  appId: "1:767178914651:android:8790d9da8b72dbd094f87e"
-};
-```
+1. **Copy the Template**: Copy `.env.example` to a new file named `.env` in the root of the project.
+2. **Add Credentials**: Open the newly created `.env` file and enter your Firebase project parameters:
+   ```env
+   EXPO_PUBLIC_FIREBASE_API_KEY=your-api-key-here
+   EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN=schuber-12563.firebaseapp.com
+   EXPO_PUBLIC_FIREBASE_PROJECT_ID=schuber-12563
+   EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET=schuber-12563.firebasestorage.app
+   EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=767178914651
+   EXPO_PUBLIC_FIREBASE_APP_ID=1:767178914651:android:8790d9da8b72dbd094f87e
+   ```
+3. **Save**: Save the file. The Expo server will automatically load these variables at start.
+
 
 ---
 
