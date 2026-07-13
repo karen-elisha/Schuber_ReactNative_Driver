@@ -1,97 +1,98 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# 🚌 Schuber Admin Mobile App (React Native + Expo)
 
-# Getting Started
+Welcome to the **Schuber Admin** mobile application. This repository contains the administrative panel application built on React Native and configured as an Expo-managed workflow (compatible with Expo SDK 54 and Expo Go).
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+---
 
-## Step 1: Start Metro
+## 🚀 Key Features
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+*   **Expo Go Support**: Pure JavaScript ecosystem optimized for rapid development and testing without requiring native Android (`android/`) or iOS (`ios/`) build pipelines.
+*   **Firebase Integration**:
+    *   **Authentication**: Real-time admin creation and secure login checking via `signInWithEmailAndPassword` and `createUserWithEmailAndPassword`.
+    *   **Firestore Database**: Persists detailed admin user accounts in the `admins` collection under their corresponding Firebase Authentication `uid`.
+    *   **Session Persistence**: Enabled `AsyncStorage` persistent authentication state so admin user logins remain cached on the device when the app is restarted.
+*   **Input Controls**:
+    *   **Mobile Number Restriction**: The registration form is configured to accept exactly `10` digits for the phone field and automatically filters out non-numeric characters (letters, spaces, prefixes) in real-time.
+*   **Clean Testing Suite**: Robust, pre-configured test suite powered by `jest-expo` and mocked native dependencies (`AsyncStorage`, `react-native-gesture-handler`, and `react-native-safe-area-context`).
+*   **Warning-Free Interface**: Globally suppresses minor warning toasts and banners via `LogBox.ignoreAllLogs()` to provide a polished user experience.
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+---
 
-```sh
-# Using npm
-npm start
+## 🛠️ Getting Started
 
-# OR using Yarn
-yarn start
-```
+### Prerequisites
 
-## Step 2: Build and run your app
+1.  Download and install the **Expo Go** application on your mobile device (Android Google Play Store or iOS App Store).
+2.  Install [Node.js](https://nodejs.org) (v18+ recommended) on your development computer.
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+### Step 1: Install Dependencies
 
-### Android
-
-```sh
-# Using npm
-npm run android
-
-# OR using Yarn
-yarn android
-```
-
-### iOS
-
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
-
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
+From the project root directory, run the following command to download and build all package dependencies:
 
 ```sh
-bundle install
+# For PowerShell/Windows environments:
+npm.cmd install --legacy-peer-deps
 ```
 
-Then, and every time you update your native dependencies, run:
+### Step 2: Configure Firebase Credentials
+
+Your Firebase integration uses the config details defined inside `firebase.js` in the project root:
+
+```javascript
+// firebase.js
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "schuber-12563.firebaseapp.com",
+  projectId: "schuber-12563",
+  storageBucket: "schuber-12563.firebasestorage.app",
+  messagingSenderId: "767178914651",
+  appId: "1:767178914651:android:8790d9da8b72dbd094f87e"
+};
+```
+
+---
+
+## 📱 Testing and Development
+
+### Running the App on Expo Go
+
+To start the Metro Bundler and generate the QR code, run:
 
 ```sh
-bundle exec pod install
+npx.cmd expo start --clear
 ```
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+1.  A QR code will print in your terminal window.
+2.  **Android**: Open the **Expo Go** application and select "Scan QR Code".
+3.  **iOS**: Open your default **Camera App** and scan the QR code to prompt launching in Expo Go.
+
+### Running Lint Checks
+
+To run the ESLint static code analyzer:
 
 ```sh
-# Using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
+npm.cmd run lint
 ```
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+### Running Unit Tests
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+To run the Jest test suite:
 
-## Step 3: Modify your app
+```sh
+npm.cmd test
+```
 
-Now that you have successfully run the app, let's make changes!
+---
 
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+## 📂 Project Architecture
 
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
-
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+```
+├── __tests__/            # Jest unit tests
+├── navigation/           # Stack navigator navigation configurations
+├── screens/              # App screens (Dashboard, Login, SignUp, Details, etc.)
+├── App.tsx               # App entry point component
+├── firebase.js           # Firebase SDK initialization settings
+├── google-services.json  # Firebase Android configuration file
+├── app.json              # Expo application manifest
+└── package.json          # Node dependencies and scripts
+```
