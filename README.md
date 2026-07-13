@@ -49,7 +49,7 @@ Because Firebase credentials are excluded from Git tracking for safety, you must
    EXPO_PUBLIC_FIREBASE_APP_ID=1:767178914651:android:8790d9da8b72dbd094f87e
    ```
 3. **Save**: Save the file. The Expo server will automatically load these variables at start.
-
+4. **Standalone Builds (Optional)**: If you intend to compile standalone native APKs/AABs or use EAS Build, make sure to save your own copy of `google-services.json` in the project root directory (which is untracked by Git).
 
 ---
 
