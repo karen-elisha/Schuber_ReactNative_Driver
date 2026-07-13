@@ -58,6 +58,14 @@ jest.mock('../firebase', () => ({
   db: {},
 }));
 
+jest.mock('@expo/vector-icons', () => {
+  const { Text } = require('react-native');
+  return {
+    Ionicons: (props: any) => require('react').createElement(Text, null, props.name),
+  };
+});
+
+
 test('renders correctly', async () => {
   await ReactTestRenderer.act(() => {
     ReactTestRenderer.create(<App />);

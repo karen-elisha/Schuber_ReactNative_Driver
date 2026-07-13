@@ -11,9 +11,11 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  View,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 // If you're not using Expo / don't have expo-linear-gradient installed, run:
 // npx expo install expo-linear-gradient
 // or swap the <LinearGradient> wrapper below for a plain <View style={styles.container}>.
@@ -31,6 +33,8 @@ export default function LoginScreen({ navigation }) {
   const [loading, setLoading] = useState(false);
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const [securePassword, setSecurePassword] = useState(true);
+
 
   // Animations
   const appNameOpacity = useRef(new Animated.Value(0)).current;
@@ -246,14 +250,19 @@ export default function LoginScreen({ navigation }) {
 
             {/* Password */}
             <Text style={styles.label}>Password</Text>
-            <TextInput
-              style={[styles.input, passwordError ? styles.inputError : null]}
-              placeholder="••••••"
-              placeholderTextColor="#9B9B9B"
-              secureTextEntry
-              value={password}
-              onChangeText={(t) => { setPassword(t); setPasswordError(''); }}
-            />
+            <View style={[styles.inputContainer, passwordError ? styles.inputErrorContainer : null]}>
+              <TextInput
+                style={styles.passwordInput}
+                placeholder="••••••"
+                placeholderTextColor="#9B9B9B"
+                secureTextEntry={securePassword}
+                value={password}
+                onChangeText={(t) => { setPassword(t); setPasswordError(''); }}
+              />
+              <TouchableOpacity onPress={() => setSecurePassword(!securePassword)} style={styles.eyeButton}>
+                <Ionicons name={securePassword ? 'eye-off' : 'eye'} size={20} color="#6B6B6B" />
+              </TouchableOpacity>
+            </View>
             {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
 
             {/* Forgot Password */}
@@ -398,5 +407,29 @@ const styles = StyleSheet.create({
   signupLink: {
     color: '#E07C00',
     fontWeight: '600',
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F6F6F6',
+    borderWidth: 1,
+    borderColor: '#EFEAE0',
+    borderRadius: 10,
+    paddingHorizontal: 16,
+    marginBottom: 6,
+  },
+  inputErrorContainer: {
+    borderColor: '#E14434',
+  },
+  passwordInput: {
+    flex: 1,
+    paddingVertical: 12,
+    color: '#1F1B24',
+    fontSize: 15,
+  },
+  eyeButton: {
+    paddingLeft: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

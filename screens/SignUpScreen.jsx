@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 // If you're not using Expo / don't have expo-linear-gradient installed, run:
 // npx expo install expo-linear-gradient
 // or swap the <LinearGradient> wrapper below for a plain <View style={styles.container}>.
@@ -218,20 +219,29 @@ export default function SignUpScreen({ navigation }) {
 }
 
 function Field({ label, placeholder, value, onChangeText, error, secureTextEntry, keyboardType, autoCapitalize, maxLength }) {
+  const [isSecure, setIsSecure] = useState(secureTextEntry);
+
   return (
     <View style={styles.fieldWrap}>
       <Text style={styles.label}>{label}</Text>
-      <TextInput
-        style={[styles.input, error ? styles.inputError : null]}
-        placeholder={placeholder}
-        placeholderTextColor="#9B9B9B"
-        value={value}
-        onChangeText={onChangeText}
-        secureTextEntry={secureTextEntry}
-        keyboardType={keyboardType || 'default'}
-        autoCapitalize={autoCapitalize || 'words'}
-        maxLength={maxLength}
-      />
+      <View style={[styles.inputContainer, error ? styles.inputErrorContainer : null]}>
+        <TextInput
+          style={styles.passwordInput}
+          placeholder={placeholder}
+          placeholderTextColor="#9B9B9B"
+          value={value}
+          onChangeText={onChangeText}
+          secureTextEntry={isSecure}
+          keyboardType={keyboardType || 'default'}
+          autoCapitalize={autoCapitalize || 'words'}
+          maxLength={maxLength}
+        />
+        {secureTextEntry ? (
+          <TouchableOpacity onPress={() => setIsSecure(!isSecure)} style={styles.eyeButton}>
+            <Ionicons name={isSecure ? 'eye-off' : 'eye'} size={20} color="#6B6B6B" />
+          </TouchableOpacity>
+        ) : null}
+      </View>
       {error ? <Text style={styles.errorText}>{error}</Text> : null}
     </View>
   );
@@ -339,5 +349,29 @@ const styles = StyleSheet.create({
   loginLink: {
     color: '#664EA4',
     fontWeight: '600',
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F6F6F6',
+    borderWidth: 1,
+    borderColor: '#EFEAE0',
+    borderRadius: 10,
+    paddingHorizontal: 16,
+    marginBottom: 4,
+  },
+  inputErrorContainer: {
+    borderColor: '#E14434',
+  },
+  passwordInput: {
+    flex: 1,
+    paddingVertical: 12,
+    color: '#1F1B24',
+    fontSize: 15,
+  },
+  eyeButton: {
+    paddingLeft: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
