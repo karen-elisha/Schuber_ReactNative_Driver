@@ -16,14 +16,13 @@ jest.useFakeTimers();
 
 
 jest.mock('react-native-safe-area-context', () => {
-  const React = require('react');
   const inset = { top: 0, left: 0, right: 0, bottom: 0 };
   const frame = { x: 0, y: 0, width: 390, height: 844 };
-  const mockContext = React.createContext({ insets: inset, frame });
+  const mockContext = require('react').createContext({ insets: inset, frame });
   return {
-    SafeAreaProvider: ({ children }) => children,
-    SafeAreaView: ({ children }) => children,
-    SafeAreaConsumer: ({ children }) => children(inset),
+    SafeAreaProvider: ({ children }: any) => children,
+    SafeAreaView: ({ children }: any) => children,
+    SafeAreaConsumer: ({ children }: any) => children(inset),
     useSafeAreaInsets: () => inset,
     useSafeAreaFrame: () => frame,
     SafeAreaContext: mockContext,
