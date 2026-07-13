@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -13,12 +13,17 @@ import {
   SafeAreaView,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import LinearGradient from 'react-native-linear-gradient';
+import { LinearGradient } from 'expo-linear-gradient';
 // If you're not using Expo / don't have expo-linear-gradient installed, run:
 // npx expo install expo-linear-gradient
 // or swap the <LinearGradient> wrapper below for a plain <View style={styles.container}>.
 
 const STORAGE_KEY = 'SchuberDriver';
+
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
+import { auth, db } from '../firebase';
+
 
 export default function SignUpScreen({ navigation }) {
   const [name, setName] = useState('');
@@ -30,15 +35,15 @@ export default function SignUpScreen({ navigation }) {
 
   const [errors, setErrors] = useState({});
 
-  const setError = (field, message) => {
+  const setError = useCallback((field, message) => {
     setErrors((prev) => ({ ...prev, [field]: message }));
-  };
+  }, []);
 
-  const clearError = (field) => {
+  const clearError = useCallback((field) => {
     setErrors((prev) => ({ ...prev, [field]: '' }));
-  };
+  }, []);
 
-  const validate = async () => {
+  const validate = useCallback(async () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     setErrors({});
 
@@ -46,44 +51,67 @@ export default function SignUpScreen({ navigation }) {
     if (!email) { setError('email', 'Email is required'); return false; }
     if (!emailRegex.test(email)) { setError('email', 'Invalid email format'); return false; }
     if (!phone) { setError('phone', 'Phone is required'); return false; }
-    if (phone.length < 10) { setError('phone', 'Enter valid phone number'); return false; }
+    if (phone.length !== 10) { setError('phone', 'Phone must be exactly 10 digits'); return false; }
     if (!password) { setError('password', 'Password is required'); return false; }
     if (password.length < 6) { setError('password', 'Minimum 6 characters'); return false; }
     if (confirmPassword !== password) { setError('confirmPassword', 'Passwords do not match'); return false; }
 
-    const savedEmail = await AsyncStorage.getItem(`${STORAGE_KEY}:admin_email`);
-    if (savedEmail === email) { setError('email', 'Email already registered'); return false; }
-
     return true;
-  };
-  const performSignUp = async () => {
-    // TEMP: dummy sign-up bypass — skips field validation.
-    // To restore real validation, revert this function.
+  }, [name, email, phone, password, confirmPassword, setError]);
+
+  const performSignUp = useCallback(async () => {
+    const isValid = await validate();
+    if (!isValid) return;
+
     setLoading(true);
-   
-    await AsyncStorage.multiSet([
-      [`${STORAGE_KEY}:admin_name`, name],
-      [`${STORAGE_KEY}:admin_email`, email],
-      [`${STORAGE_KEY}:admin_phone`, phone],
-      [`${STORAGE_KEY}:admin_password`, password],
-      [`${STORAGE_KEY}:admin_role`, 'ADMIN'],
-      [`${STORAGE_KEY}:admin_registered`, 'true'],
-    ]);
+    try {
+      // 1. Create User Account in Firebase Auth
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
 
-    setLoading(false);
+      // 2. Store Admin Profile in Firestore under the user's uid
+      await setDoc(doc(db, 'admins', user.uid), {
+        uid: user.uid,
+        name,
+        email,
+        phone,
+        role: 'ADMIN',
+        createdAt: new Date().toISOString()
+      });
 
-    Alert.alert(
-      'Registration Successful!',
-      `Welcome ${name}!\n\nYour admin account has been created.\nEmail: ${email}\n\nYou can now login with your credentials.`,
-      [
-        {
-          text: 'Go to Login',
-          onPress: () => navigation.replace('Login'),
-        },
-      ],
-      { cancelable: false }
-    );
-  };
+      // 3. Keep local AsyncStorage indicator (optional/convenient)
+      await AsyncStorage.multiSet([
+        [`${STORAGE_KEY}:admin_name`, name],
+        [`${STORAGE_KEY}:admin_email`, email],
+        [`${STORAGE_KEY}:admin_phone`, phone],
+        [`${STORAGE_KEY}:admin_password`, password],
+        [`${STORAGE_KEY}:admin_role`, 'ADMIN'],
+        [`${STORAGE_KEY}:admin_registered`, 'true'],
+      ]);
+
+      setLoading(false);
+
+      Alert.alert(
+        'Registration Successful!',
+        `Welcome ${name}!\n\nYour admin account has been created in Firebase.\nEmail: ${email}\n\nYou can now login with your credentials.`,
+        [
+          {
+            text: 'Go to Login',
+            onPress: () => navigation.replace('Login'),
+          },
+        ],
+        { cancelable: false }
+      );
+    } catch (err) {
+      setLoading(false);
+      let errorMsg = err?.message || String(err);
+      if (err?.code === 'auth/email-already-in-use') {
+        errorMsg = 'This email address is already in use.';
+        setError('email', errorMsg);
+      }
+      Alert.alert('Registration Failed', errorMsg);
+    }
+  }, [name, email, phone, password, validate, navigation, setError]);
 
   return (
     <LinearGradient colors={['#FFF7E1', '#FCE7B8']} style={styles.container}>
@@ -125,11 +153,16 @@ export default function SignUpScreen({ navigation }) {
               {/* Phone */}
               <Field
                 label="Phone"
-                placeholder="+91 98765 00000"
+                placeholder="9876500000"
                 value={phone}
-                onChangeText={(t) => { setPhone(t); clearError('phone'); }}
+                onChangeText={(t) => {
+                  const cleaned = t.replace(/[^0-9]/g, '');
+                  setPhone(cleaned);
+                  clearError('phone');
+                }}
                 error={errors.phone}
                 keyboardType="phone-pad"
+                maxLength={10}
               />
 
               {/* Password */}
@@ -184,7 +217,7 @@ export default function SignUpScreen({ navigation }) {
   );
 }
 
-function Field({ label, placeholder, value, onChangeText, error, secureTextEntry, keyboardType, autoCapitalize }) {
+function Field({ label, placeholder, value, onChangeText, error, secureTextEntry, keyboardType, autoCapitalize, maxLength }) {
   return (
     <View style={styles.fieldWrap}>
       <Text style={styles.label}>{label}</Text>
@@ -197,6 +230,7 @@ function Field({ label, placeholder, value, onChangeText, error, secureTextEntry
         secureTextEntry={secureTextEntry}
         keyboardType={keyboardType || 'default'}
         autoCapitalize={autoCapitalize || 'words'}
+        maxLength={maxLength}
       />
       {error ? <Text style={styles.errorText}>{error}</Text> : null}
     </View>

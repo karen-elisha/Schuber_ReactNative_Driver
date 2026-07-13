@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -32,24 +32,14 @@ export default function DashboardScreen({ navigation }) {
   const [pendingDriversBadge] = useState('2');
   const [pendingStudentsBadge] = useState('3');
 
-  useFocusEffect(
-    useCallback(() => {
-      checkAuth();
-      loadAdminDetails();
-
-      const backHandler = BackHandler.addEventListener('hardwareBackPress', handleBackPress);
-      return () => backHandler.remove();
-    }, [])
-  );
-
-  const checkAuth = async () => {
+  const checkAuth = useCallback(async () => {
     const isLoggedIn = await AsyncStorage.getItem(`${STORAGE_KEY}:isAdminLoggedIn`);
     if (isLoggedIn !== 'true') {
       navigation.replace('Login');
     }
-  };
+  }, [navigation]);
 
-  const loadAdminDetails = async () => {
+  const loadAdminDetails = useCallback(async () => {
     const name = await AsyncStorage.getItem(`${STORAGE_KEY}:admin_name`) || 'Admin';
     const email = await AsyncStorage.getItem(`${STORAGE_KEY}:admin_email`) || '';
     const role = await AsyncStorage.getItem(`${STORAGE_KEY}:admin_role`) || 'ADMIN';
@@ -60,22 +50,32 @@ export default function DashboardScreen({ navigation }) {
     setAdminRole(role.replace('_', ' '));
 
     if (timestamp) {
-      const date = new Date(parseInt(timestamp));
+      const date = new Date(parseInt(timestamp, 10));
       const formatted = date.toLocaleString('en-IN', {
         day: '2-digit', month: 'short', year: 'numeric',
         hour: '2-digit', minute: '2-digit', hour12: true,
       });
       setLoginTime(`Last login: ${formatted}`);
     }
-  };
+  }, []);
 
-  const handleBackPress = () => {
+  const handleBackPress = useCallback(() => {
     Alert.alert('Exit', 'Do you want to exit the app?', [
       { text: 'Yes', onPress: () => BackHandler.exitApp() },
       { text: 'No' },
     ]);
     return true;
-  };
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      checkAuth();
+      loadAdminDetails();
+
+      const backHandler = BackHandler.addEventListener('hardwareBackPress', handleBackPress);
+      return () => backHandler.remove();
+    }, [checkAuth, loadAdminDetails, handleBackPress])
+  );
 
   const showLogoutDialog = () => {
     Alert.alert(

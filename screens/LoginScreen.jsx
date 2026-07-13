@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
-  View,
   Text,
   TextInput,
   TouchableOpacity,
@@ -14,12 +13,17 @@ import {
   ScrollView,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import LinearGradient from 'react-native-linear-gradient';
+import { LinearGradient } from 'expo-linear-gradient';
 // If you're not using Expo / don't have expo-linear-gradient installed, run:
 // npx expo install expo-linear-gradient
 // or swap the <LinearGradient> wrapper below for a plain <View style={styles.container}>.
 
 const STORAGE_KEY = 'SchuberDriver';
+
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
+import { auth, db } from '../firebase';
+
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
@@ -35,23 +39,14 @@ export default function LoginScreen({ navigation }) {
   const cardShakeX = useRef(new Animated.Value(0)).current;
   const cardScale = useRef(new Animated.Value(1)).current;
 
-  useEffect(() => {
-    checkAutoLogin();
-    setupAnimations();
-    seedDemoCredentials();
-
-    const backHandler = BackHandler.addEventListener('hardwareBackPress', handleBackPress);
-    return () => backHandler.remove();
-  }, []);
-
-  const checkAutoLogin = async () => {
+  const checkAutoLogin = useCallback(async () => {
     const isLoggedIn = await AsyncStorage.getItem(`${STORAGE_KEY}:isAdminLoggedIn`);
     if (isLoggedIn === 'true') {
       navigation.replace('Dashboard');
     }
-  };
+  }, [navigation]);
 
-  const seedDemoCredentials = async () => {
+  const seedDemoCredentials = useCallback(async () => {
     const registered = await AsyncStorage.getItem(`${STORAGE_KEY}:admin_registered`);
     if (!registered) {
       await AsyncStorage.multiSet([
@@ -63,9 +58,9 @@ export default function LoginScreen({ navigation }) {
         [`${STORAGE_KEY}:admin_registered`, 'true'],
       ]);
     }
-  };
+  }, []);
 
-  const setupAnimations = () => {
+  const setupAnimations = useCallback(() => {
     Animated.timing(appNameOpacity, {
       toValue: 1,
       duration: 800,
@@ -86,25 +81,25 @@ export default function LoginScreen({ navigation }) {
         useNativeDriver: true,
       }),
     ]).start();
-  };
+  }, [appNameOpacity, cardTranslateY, cardOpacity]);
 
-  const shakeCard = () => {
+  const shakeCard = useCallback(() => {
     Animated.sequence([
       Animated.timing(cardShakeX, { toValue: 20, duration: 80, useNativeDriver: true }),
       Animated.timing(cardShakeX, { toValue: -40, duration: 80, useNativeDriver: true }),
       Animated.timing(cardShakeX, { toValue: 40, duration: 80, useNativeDriver: true }),
       Animated.timing(cardShakeX, { toValue: 0, duration: 80, useNativeDriver: true }),
     ]).start();
-  };
+  }, [cardShakeX]);
 
-  const bounceCard = (onEnd) => {
+  const bounceCard = useCallback((onEnd) => {
     Animated.sequence([
       Animated.timing(cardScale, { toValue: 0.97, duration: 150, useNativeDriver: true }),
       Animated.timing(cardScale, { toValue: 1, duration: 150, useNativeDriver: true }),
     ]).start(onEnd);
-  };
+  }, [cardScale]);
 
-  const validate = () => {
+  const validate = useCallback(() => {
     let valid = true;
     setEmailError('');
     setPasswordError('');
@@ -124,29 +119,63 @@ export default function LoginScreen({ navigation }) {
       valid = false;
     }
     return valid;
-  };
-  const performLogin = async () => {
+  }, [email, password]);
+
+  const performLogin = useCallback(async () => {
     console.log('LOGIN: start');
     setLoading(true);
     try {
-      console.log('LOGIN: before multiSet, AsyncStorage =', typeof AsyncStorage, typeof AsyncStorage?.multiSet);
+      // 1. Authenticate with Firebase Auth
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // 2. Fetch admin details from Firestore (to check if they exist in the admins collection)
+      let nameValue = 'Admin';
+      const adminDoc = await getDoc(doc(db, 'admins', user.uid));
+      if (adminDoc.exists()) {
+        const data = adminDoc.data();
+        nameValue = data.name || 'Admin';
+      } else {
+        // If not in admins, check if user exists in the general users collection or is admin
+        console.log('User is not explicitly in admins collection, fallback to general login');
+      }
+
+      // 3. Save local login session state
       await AsyncStorage.multiSet([
         [`${STORAGE_KEY}:isAdminLoggedIn`, 'true'],
         [`${STORAGE_KEY}:loginTimestamp`, Date.now().toString()],
+        [`${STORAGE_KEY}:admin_name`, nameValue],
+        [`${STORAGE_KEY}:admin_email`, email],
       ]);
-      console.log('LOGIN: after multiSet');
+      console.log('LOGIN: completed successfully');
       setLoading(false);
       navigation.replace('Dashboard');
-      console.log('LOGIN: after navigate');
     } catch (err) {
-      console.log('LOGIN: caught error', err);
+      console.log('LOGIN: failed', err);
       setLoading(false);
-      Alert.alert('Error', String(err?.message || err));
+      let errorMsg = err?.message || String(err);
+      if (
+        err?.code === 'auth/invalid-credential' ||
+        err?.code === 'auth/user-not-found' ||
+        err?.code === 'auth/wrong-password'
+      ) {
+        errorMsg = 'Invalid email or password. Please try again.';
+      }
+      Alert.alert('Login Failed', errorMsg);
     }
-  };
-  
+  }, [email, password, navigation]);
 
-  const showForgotPassword = async () => {
+  const handleLoginPress = useCallback(() => {
+    if (!validate()) {
+      shakeCard();
+      return;
+    }
+    bounceCard(() => {
+      performLogin();
+    });
+  }, [validate, shakeCard, bounceCard, performLogin]);
+
+  const showForgotPassword = useCallback(async () => {
     const savedEmail = await AsyncStorage.getItem(`${STORAGE_KEY}:admin_email`);
     const savedPassword = await AsyncStorage.getItem(`${STORAGE_KEY}:admin_password`);
     Alert.alert(
@@ -154,15 +183,24 @@ export default function LoginScreen({ navigation }) {
       `Your registered credentials:\n\nEmail: ${savedEmail}\nPassword: ${savedPassword}\n\nPlease keep these safe.`,
       [{ text: 'OK' }]
     );
-  };
+  }, []);
 
-  const handleBackPress = () => {
+  const handleBackPress = useCallback(() => {
     Alert.alert('Exit App', 'Do you want to exit?', [
       { text: 'Yes', onPress: () => BackHandler.exitApp() },
       { text: 'No' },
     ]);
     return true;
-  };
+  }, []);
+
+  useEffect(() => {
+    checkAutoLogin();
+    setupAnimations();
+    seedDemoCredentials();
+
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', handleBackPress);
+    return () => backHandler.remove();
+  }, [checkAutoLogin, setupAnimations, seedDemoCredentials, handleBackPress]);
 
   return (
     <LinearGradient colors={['#FFF7E1', '#FCE7B8']} style={styles.container}>
@@ -226,7 +264,7 @@ export default function LoginScreen({ navigation }) {
             {/* Login Button */}
             <TouchableOpacity
               style={[styles.loginBtn, loading && styles.loginBtnDisabled]}
-              onPress={performLogin}
+              onPress={handleLoginPress}
               disabled={loading}
               activeOpacity={0.85}
             >
